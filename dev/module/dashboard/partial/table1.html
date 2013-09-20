@@ -1,0 +1,36 @@
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>Account Type</th>
+			<th>1</th>
+			<th>2</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr data-ng-repeat="row in accountQuantities.type">
+			<td>{{row.name}}</td>
+			<td>
+				<div style="width:50px;">
+					<div 
+						style="height:20px;"
+						data-ng-style="{'background-color': row.colour, width: row.max*100+'%'}"
+					></div>
+				</div>
+			</td>
+			<td style="">
+				<div style="width:50px;">
+					<div 
+						style="
+							border-style:solid;
+							border-radius:100%;
+							width:0px;
+							height:0px;
+							/*margin: 0 auto;*/
+						"
+						data-ng-style="{'border-color': row.colour, 'border-width': row.max*10+'px'}"
+					></div>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>

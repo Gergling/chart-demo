@@ -1,0 +1,26 @@
+<!doctype html>
+<html data-ng-app="app">
+  <head>
+	<title>Dev Charts</title>
+
+	<!-- Styles -->
+	<link rel="stylesheet" type="text/css" href="https://raw.github.com/ducksboard/gridster.js/master/dist/jquery.gridster.min.css"/>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+
+	<!-- Packages -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+	<script type="text/javascript" src="vendor/gridster/master/jquery.gridster.min.js"></script>
+	<script type="text/javascript" src="vendor/DevExpressChartJS-13.1.6/Lib/js/globalize.min.js"></script>
+	<script type="text/javascript" src="vendor/DevExpressChartJS-13.1.6/Lib/js/dx.chartjs.js"></script>
+
+	<!-- Modular -->
+	<script src="module/application/app.js"></script>
+	<!--<script src="module/dashboard/factory/dashboardFactory.js"></script>
+	<script src="module/dashboard/controller/dashboardController.js"></script>-->
+  </head>
+  <body style="background-image: url(http://maestro-demo.sisense.com/GuidedTourSample/Images/background.png);">
+    <div class="container" data-ng-include="'module/dashboard/partial/dashboard.html'">
+    </div>
+  </body>
+</html>

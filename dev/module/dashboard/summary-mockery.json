@@ -1,0 +1,14 @@
+{
+	"accounts": [
+		{"type":"Individual"},
+		{"type":"Corporate"},
+		{"type":"Scheme"},
+		{"type":"Scheme"},
+		{"type":"Scheme"},
+		{"type":"Scheme"},
+		{"type":"Reinsurance"},
+		{"type":"Reinsurance"},
+		{"type":"Reinsurance"},
+		{"type":"Corporate"}
+	]
+}

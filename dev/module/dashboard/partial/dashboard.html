@@ -1,0 +1,55 @@
+<style>
+	.gridster > ul > li {
+		list-style:none;
+		position:absolute;
+		background-color:white;
+		box-sizing: border-box;
+		border: solid 1px #dddddd;
+	}
+	.preview-holder {z-index:-1;}
+	.dragging.player {z-index:1;}
+	.panel-blue-single {background-image:url("module/dashboard/images/panel-blue-single.jpg");}
+	.panel-blue-double {background-image:url("module/dashboard/images/panel-blue-double.jpg");}
+	.panel-yellow-single {background-image:url("module/dashboard/images/panel-yellow-single.jpg");}
+	.panel-yellow-double-person {background-image:url("module/dashboard/images/panel-yellow-double-person.jpg");}
+
+	.chart {height:200px;}
+</style>
+
+<div class="row-fluid" data-ng-controller="dashboardController">
+    <h2>Dashboard</h2>
+	<div class="span12">
+		<script type="text/javascript">
+			$(function(){ //DOM Ready
+
+				$(".gridster ul").gridster({
+					widget_margins: [10, 10],
+					widget_base_dimensions: [207, 206]
+				});
+			});
+			console.log("html done");
+		</script>
+		<div class="gridster">
+			<ul>
+				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double"></li>
+				<li data-row="1" data-col="2" data-sizex="1" data-sizey="1" class="panel-yellow-single"></li>
+				<li data-row="1" data-col="3" data-sizex="1" data-sizey="1" class="panel-blue-single">Items Sold</li>
+				<li data-row="1" data-col="4" data-sizex="2" data-sizey="2"><div data-yoa-chart-bar></div></li>
+
+				<li data-row="2" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double">Revenue Growth</li>
+				<li data-row="2" data-col="2" data-sizex="2" data-sizey="2" data-ng-include="'module/dashboard/partial/table1.html'"></li>
+
+				<li data-row="3" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double">Items Sold Growth</li>
+
+				<li data-row="3" data-col="4" data-sizex="2" data-sizey="1"><div data-yoa-chart-pie class="chart"></div></li>
+
+				<li data-row="4" data-col="1" data-sizex="3" data-sizey="2">Hits By State</li>
+
+				<li data-row="4" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double">New/Used</li>
+				<li data-row="4" data-col="5" data-sizex="1" data-sizey="1" class="panel-yellow-double-person">Visitors outside US</li>
+				<li data-row="5" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double"># of brands</li>
+				<li data-row="5" data-col="5" data-sizex="1" data-sizey="1" class="panel-blue-double">Revenue outside US</li>
+			</ul>
+		</div>
+	</div>
+</div>
