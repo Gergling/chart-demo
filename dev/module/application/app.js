@@ -149,6 +149,43 @@ var app = angular.module('app',[
 				enabled: true
 			    }
 			};
+
+			var chartDataSource = [
+			    { name: "Alfred", standard: 29.956, declaration: 90.354, "package": 14.472},
+			    { name: "Boris", standard: 25.607, declaration: 55.793, "package": 3.727},
+			    { name: "Charlie", standard: 13.493, declaration: 48.983, "package": 5.802},
+			    { name: "Daniel", standard: 9.575, declaration: 43.363, "package": 9.024},
+			];
+			
+			var options = {
+			    dataSource: chartDataSource,
+			    //commonSeriesSettings: {
+				//argumentField: 'year'
+			    //},
+			    commonSeriesSettings: {
+				argumentField: "name",
+				type: "stackedBar"
+			    },
+			    series: [
+				{ valueField: "standard", name: "Standard", stack: "male" },
+				{ valueField: "declaration", name: "Declaration", stack: "male" },
+				{ valueField: "package", name: "Package", stack: "male" },
+			    ],
+			    legend: {
+				horizontalAlignment: "right",
+				position: "inside",
+				border: { visible: true }
+			    },
+			    valueAxis: {
+				title: {
+				    text: "Populations, millions"
+				}
+			    },
+			    title: "Agent Sales",
+			    tooltip: {
+				enabled: true
+			    }
+			};
 			$element.dxChart(options);
 		}
 	};
