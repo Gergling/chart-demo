@@ -2,18 +2,30 @@
 	.gridster > ul > li {
 		list-style:none;
 		position:absolute;
-		background-color:white;
 		box-sizing: border-box;
-		border: solid 1px #dddddd;
 	}
 	.preview-holder {z-index:-1;}
 	.dragging.player {z-index:1;}
-	.panel-blue-single {background-image:url("module/dashboard/images/panel-blue-single.jpg");}
-	.panel-blue-double {background-image:url("module/dashboard/images/panel-blue-double.jpg");}
+	.panel-blue-single {color:white;background-image:url("module/dashboard/images/panel-blue-single.jpg");}
+	.panel-blue-double {color:white;background-image:url("module/dashboard/images/panel-blue-double.jpg");}
 	.panel-yellow-single {background-image:url("module/dashboard/images/panel-yellow-single.jpg");}
 	.panel-yellow-double-person {background-image:url("module/dashboard/images/panel-yellow-double-person.jpg");}
 
+	.border {border: solid 1px #dddddd;}
+
 	.chart {height:200px;}
+
+
+	.right-column, .bottom , .symbol {position:absolute;}
+
+	.arrow-down-red, .arrow-up-green {border-color:transparent;border-style:solid;width:0;height:0;top:55px;left:28px;border-width: 0 13px;}
+	.arrow-down-red {border-top-width: 20px; border-top-color:#d00;}
+	.arrow-up-green {border-bottom-width: 20px; border-bottom-color:#0a0;}
+
+	.title {margin: 10px;}
+	.right-column {left: 85px;width:100px;text-align:center;top:48px;}
+	.bottom {bottom: 0;width:100%;height:100px;text-align:center;}
+	.bottom .single-number {position:absolute;top:50%;height:inherit;width:inherit;margin-top: -50px;font-size:50pt;}
 </style>
 
 <div class="row-fluid" data-ng-controller="dashboardController">
@@ -27,28 +39,76 @@
 					widget_base_dimensions: [207, 206]
 				});
 			});
-			console.log("html done");
 		</script>
 		<div class="gridster">
 			<ul>
-				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double"></li>
+				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+					<div data-yoa-double-panel 
+						data-title="Hit Growth" 
+						data-symbol-class="symbol arrow-down-red" 
+						data-right="10%" 
+						data-bottom="-14%"
+					></div>
+				</li>
 				<li data-row="1" data-col="2" data-sizex="1" data-sizey="1" class="panel-yellow-single"></li>
 				<li data-row="1" data-col="3" data-sizex="1" data-sizey="1" class="panel-blue-single">Items Sold</li>
-				<li data-row="1" data-col="4" data-sizex="2" data-sizey="2"><div data-yoa-chart-bar></div></li>
+				<li data-row="1" data-col="4" data-sizex="2" data-sizey="2" class="border background-white"><div data-yoa-chart-bar></div></li>
 
-				<li data-row="2" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double">Revenue Growth</li>
-				<li data-row="2" data-col="2" data-sizex="2" data-sizey="2" data-ng-include="'module/dashboard/partial/table1.html'"></li>
+				<li data-row="2" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+					<div data-yoa-double-panel 
+						data-title="Revenue Growth" 
+						data-symbol-class="symbol arrow-up-green" 
+						data-right="11%" 
+						data-bottom="23%"
+					></div>
+				</li>
+				<li data-row="2" data-col="2" data-sizex="2" data-sizey="2" class="border background-white" data-ng-include="'module/dashboard/partial/table1.html'"></li>
 
-				<li data-row="3" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double">Items Sold Growth</li>
+				<li data-row="3" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double">
+					<div data-yoa-double-panel 
+						data-title="Policies Sold Growth" 
+						data-symbol-class="symbol arrow-down-red" 
+						data-right="11%" 
+						data-bottom="23%"
+					></div>
+				</li>
 
-				<li data-row="3" data-col="4" data-sizex="2" data-sizey="1"><div data-yoa-chart-pie class="chart"></div></li>
+				<li data-row="3" data-col="4" data-sizex="2" data-sizey="1" class="border background-white"><div data-yoa-chart-pie class="chart"></div></li>
 
-				<li data-row="4" data-col="1" data-sizex="3" data-sizey="2">Hits By State</li>
+				<li data-row="4" data-col="1" data-sizex="3" data-sizey="2" class="border background-white">Hits By State</li>
 
-				<li data-row="4" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double">New/Used</li>
-				<li data-row="4" data-col="5" data-sizex="1" data-sizey="1" class="panel-yellow-double-person">Visitors outside US</li>
-				<li data-row="5" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double"># of brands</li>
-				<li data-row="5" data-col="5" data-sizex="1" data-sizey="1" class="panel-blue-double">Revenue outside US</li>
+				<li data-row="4" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double">
+					<div data-yoa-double-panel 
+						data-title="# New Accounts" 
+						data-symbol-class="icon-star" 
+						data-right="50%" 
+						data-bottom="39%"
+					></div>
+				</li>
+				<li data-row="4" data-col="5" data-sizex="1" data-sizey="1" class="panel-yellow-double-person">
+					<div data-yoa-double-panel 
+						data-title="Active Agents" 
+						data-symbol-class="" 
+						data-right="23%" 
+						data-bottom="49%"
+					></div>
+				</li>
+				<li data-row="5" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double">
+					<div data-yoa-double-panel 
+						data-title="# of Accounts" 
+						data-symbol-class="icon-factory" 
+						data-right="519" 
+						data-bottom="581"
+					></div>
+				</li>
+				<li data-row="5" data-col="5" data-sizex="1" data-sizey="1" class="panel-blue-double">
+					<div data-yoa-double-panel 
+						data-title="Active Opportunities" 
+						data-symbol-class="icon-plane" 
+						data-right="23%" 
+						data-bottom="35%"
+					></div>
+				</li>
 			</ul>
 		</div>
 	</div>

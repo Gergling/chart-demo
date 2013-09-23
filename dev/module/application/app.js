@@ -152,16 +152,22 @@ var app = angular.module('app',[
 
 			var chartDataSource = [
 			    { name: "Alfred", standard: 29.956, declaration: 90.354, "package": 14.472},
-			    { name: "Boris", standard: 25.607, declaration: 55.793, "package": 3.727},
+			    { name: "Boris", standard: 25.607, declaration: 55.793, "package": 23.727},
 			    { name: "Charlie", standard: 13.493, declaration: 48.983, "package": 5.802},
 			    { name: "Daniel", standard: 9.575, declaration: 43.363, "package": 9.024},
+			    { name: "Edward", standard: 9.575, declaration: 43.363, "package": 9.024},
+			    { name: "Florence", standard: 9.575, declaration: 43.363, "package": 9.024},
+			    { name: "Gordon", standard: 9.575, declaration: 43.363, "package": 9.024},
+			    { name: "Hannah", standard: 9.575, declaration: 43.363, "package": 9.024},
+			    { name: "Inta", standard: 9.575, declaration: 43.363, "package": 9.024},
+			    { name: "Jack", standard: 9.575, declaration: 43.363, "package": 9.024},
+			    { name: "Kevin", standard: 9.575, declaration: 43.363, "package": 9.024},
+			    { name: "Langachlacrannachan", standard: 9.575, declaration: 43.363, "package": 9.024},
 			];
 			
 			var options = {
+				rotated: true,
 			    dataSource: chartDataSource,
-			    //commonSeriesSettings: {
-				//argumentField: 'year'
-			    //},
 			    commonSeriesSettings: {
 				argumentField: "name",
 				type: "stackedBar"
@@ -172,13 +178,14 @@ var app = angular.module('app',[
 				{ valueField: "package", name: "Package", stack: "male" },
 			    ],
 			    legend: {
-				horizontalAlignment: "right",
-				position: "inside",
-				border: { visible: true }
+				horizontalAlignment: "center",
+				verticalAlignment: "bottom",
+				//position: "inside",
+				//border: { visible: true }
 			    },
 			    valueAxis: {
 				title: {
-				    text: "Populations, millions"
+				    text: "Worth (Naira)"
 				}
 			    },
 			    title: "Agent Sales",
@@ -189,4 +196,18 @@ var app = angular.module('app',[
 			$element.dxChart(options);
 		}
 	};
+}).directive('yoaDoublePanel', function() {
+	return {
+		restrict: 'ACE',
+		transclude: true,
+		templateUrl: 'module/dashboard/partial/panel-double.html',
+		controller: function($scope, $attrs) {
+			$scope.title = $attrs.title;
+			$scope.symbol = $attrs.symbolClass;
+			$scope.bottom = $attrs.bottom;
+			$scope.right = $attrs.right;
+		},
+	}
 });
+
+// Panel types should have directives
