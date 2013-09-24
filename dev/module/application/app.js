@@ -109,48 +109,6 @@ var app = angular.module('app',[
 		transclude: true,
 		controller: function($scope, $element, dataSummary, $attrs) {
 			var chartDataSource = [
-			    { state: "USA", maleyoung: 29.956, malemiddle: 90.354, maleolder: 14.472, femaleyoung: 28.597, femalemiddle: 91.827, femaleolder: 20.362 },
-			    { state: "Brazil", maleyoung: 25.607, malemiddle: 55.793, maleolder: 3.727, femaleyoung: 24.67, femalemiddle: 57.598, femaleolder: 5.462 },
-			    { state: "Russia", maleyoung: 13.493, malemiddle: 48.983, maleolder: 5.802, femaleyoung: 12.971, femalemiddle: 52.14, femaleolder: 12.61 },
-			    { state: "Japan", maleyoung: 9.575, malemiddle: 43.363, maleolder: 9.024, femaleyoung: 9.105, femalemiddle: 42.98, femaleolder: 12.501 },
-			    { state: "Mexico", maleyoung: 17.306, malemiddle: 30.223, maleolder: 1.927, femaleyoung: 16.632, femalemiddle: 31.868, femaleolder: 2.391 },
-			    { state: "Germany", maleyoung: 6.679, malemiddle: 28.638, maleolder: 5.133, femaleyoung: 6.333, femalemiddle: 27.693, femaleolder: 8.318 },
-			    { state: "United Kindom", maleyoung: 5.816, malemiddle: 19.622, maleolder: 3.864, femaleyoung: 5.519, femalemiddle: 19.228, femaleolder: 5.459 }
-			];
-			var options = {
-			    dataSource: chartDataSource,
-			    commonSeriesSettings: {
-				argumentField: 'year'
-			    },
-			    commonSeriesSettings: {
-				argumentField: "state",
-				type: "stackedBar"
-			    },
-			    series: [
-				{ valueField: "maleyoung", name: "Male: 0-14", stack: "male" },
-				{ valueField: "malemiddle", name: "Male: 15-64", stack: "male" },
-				{ valueField: "maleolder", name: "Male: 65 and older", stack: "male" },
-				{ valueField: "femaleyoung", name: "Female: 0-14", stack: "female" },
-				{ valueField: "femalemiddle", name: "Female: 15-64", stack: "female" },
-				{ valueField: "femaleolder", name: "Female: 65 and older", stack: "female" }
-			    ],
-			    legend: {
-				horizontalAlignment: "right",
-				position: "inside",
-				border: { visible: true }
-			    },
-			    valueAxis: {
-				title: {
-				    text: "Populations, millions"
-				}
-			    },
-			    title: "Population: Age Structure",
-			    tooltip: {
-				enabled: true
-			    }
-			};
-
-			var chartDataSource = [
 			    { name: "Alfred", standard: 29.956, declaration: 90.354, "package": 14.472},
 			    { name: "Boris", standard: 25.607, declaration: 55.793, "package": 23.727},
 			    { name: "Charlie", standard: 13.493, declaration: 48.983, "package": 5.802},
@@ -193,12 +151,54 @@ var app = angular.module('app',[
 				enabled: true
 			    }
 			};
+			switch($attrs.name) {
+				case "revenue": {
+				} break;
+			}
+			$element.dxChart(options);
+		}
+	};
+}).directive('yoaChartBarRevenue', function() {
+	return {
+		restrict: 'ACE',
+		transclude: true,
+		controller: function($scope, $element, dataSummary, $attrs) {
+			var chartDataSource = [
+			    { name: "1", value: 30.354},
+			    { name: "2", value: 25.607},
+			    { name: "3", value: 20.493},
+			];
+			
+			var options = {
+			    dataSource: chartDataSource,
+			    series: {
+				argumentField: "name",
+				valueField: "value",
+				name: "Revenue",
+				type: "bar",
+				color: "#d00",
+			    },
+			    legend: {
+				    visible: false,
+				horizontalAlignment: "center",
+				verticalAlignment: "bottom",
+				//position: "inside",
+				//border: { visible: true }
+			    },
+			    commonAxisSettings: {
+				    visible: false,
+			    },
+			    tooltip: {
+				enabled: true
+			    }
+			};
 			$element.dxChart(options);
 		}
 	};
 }).directive('yoaDoublePanel', function() {
 	return {
 		restrict: 'ACE',
+		scope: true,
 		transclude: true,
 		templateUrl: 'module/dashboard/partial/panel-double.html',
 		controller: function($scope, $attrs) {
@@ -206,6 +206,18 @@ var app = angular.module('app',[
 			$scope.symbol = $attrs.symbolClass;
 			$scope.bottom = $attrs.bottom;
 			$scope.right = $attrs.right;
+		},
+	}
+}).directive('yoaSinglePanel', function() {
+	return {
+		restrict: 'ACE',
+		scope: {bottom:'@'},
+		transclude: true,
+		templateUrl: 'module/dashboard/partial/panel-single.html',
+		controller: function($scope, $attrs) {
+			$scope.title = $attrs.title;
+			$scope.middle = $attrs.middle;
+			$scope.bottom = $attrs.bottom;
 		},
 	}
 });
