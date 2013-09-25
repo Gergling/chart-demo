@@ -26,6 +26,8 @@
 	.right-column {left: 85px;width:100px;text-align:center;top:48px;}
 	.bottom {bottom: 0;width:100%;height:100px;text-align:center;}
 	.bottom .single-number {position:absolute;top:50%;height:inherit;width:inherit;margin-top: -50px;font-size:50pt;}
+	[data-yoa-single-panel] .middle {text-align:center;padding:11px;}
+	[data-yoa-single-panel] .bottom {left:10px;width:80%;height:90px;bottom:10px;}
 </style>
 
 <div class="row-fluid" data-ng-controller="dashboardController">
@@ -43,7 +45,7 @@
 		<div class="gridster">
 			<ul>
 				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
-					<div data-yoa-double-panel 
+					<div data-yoa-double-panel=""
 						data-title="Hit Growth" 
 						data-symbol-class="symbol arrow-down-red" 
 						data-right="10%" 
@@ -62,6 +64,7 @@
 						data-title="Policies Sold" 
 						data-middle="1,692" 
 						data-bottom="{{dataSummary}}"
+						data-chart-name="policies-sold"
 					></div>
 				</li>
 				<li data-row="1" data-col="4" data-sizex="2" data-sizey="2" class="border background-white"><div data-yoa-chart-bar></div></li>
@@ -87,7 +90,42 @@
 
 				<li data-row="3" data-col="4" data-sizex="2" data-sizey="1" class="border background-white"><div data-yoa-chart-pie class="chart"></div></li>
 
-				<li data-row="4" data-col="1" data-sizex="3" data-sizey="2" class="border background-white">Hits By State</li>
+				<li data-row="4" data-col="1" data-sizex="3" data-sizey="2" class="border background-white">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Account</th>
+								<th>Executive</th>
+								<th>Type</th>
+								<th># Opportunities</th>
+								<th># Active Policies</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Alpha Energy</td>
+								<td>Alfred</td>
+								<td>Corporate</td>
+								<td>12</td>
+								<td>5</td>
+							</tr>
+							<tr>
+								<td>Beta Petroleum</td>
+								<td>Bertram</td>
+								<td>Corporate</td>
+								<td>6</td>
+								<td>5</td>
+							</tr>
+							<tr>
+								<td>Cincinatti Foodstuffs</td>
+								<td>Charlotte</td>
+								<td>Corporate</td>
+								<td>5</td>
+								<td>87</td>
+							</tr>
+						</tbody>
+					</table>
+				</li>
 
 				<li data-row="4" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double">
 					<div data-yoa-double-panel 

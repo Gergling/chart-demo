@@ -48,6 +48,40 @@ var app = angular.module('app',[
 	summary.fetchAccountSummaries();
 
 	return summary;
+}).factory('chartOptions', function ($rootScope, $http) {
+	var options = {
+		getDatasource: function(chartName) {
+			switch(chartName) {
+				//case 
+			}
+		},
+		getOptions: function(chartName) {
+			options.getDatasource(chartName);
+			return {
+				dataSource: dataSource,
+				series: {
+					argumentField: 'category',
+					valueField: 'value',
+				},
+				tooltip: {
+					enabled: true,
+					percentPrecision: 2,
+					customizeText: function (value) {
+						return value.percentText;
+					}
+				},
+				title: {
+					text: 'Accounts by Type'
+				},
+				legend: {
+					horizontalAlignment: 'right',
+					verticalAlignment: 'top'
+				}
+			};
+		},
+	};
+
+	return options;
 }).controller('dashboardController', function($scope, dataSummary) {
 	// We will want multiple dashboards in the future. They will extend this one.
 
@@ -102,7 +136,7 @@ var app = angular.module('app',[
 				$element.dxPieChart(options);
 			});
 		},
-	}
+	};
 }).directive('yoaChartBar', function() {
 	return {
 		restrict: 'ACE',
@@ -158,10 +192,11 @@ var app = angular.module('app',[
 			$element.dxChart(options);
 		}
 	};
-}).directive('yoaChartBarRevenue', function() {
+}).directive('yoaChartPanel', function() {
 	return {
 		restrict: 'ACE',
 		transclude: true,
+		scope: {chartName:"@"},
 		controller: function($scope, $element, dataSummary, $attrs) {
 			var chartDataSource = [
 			    { name: "1", value: 30.354},
@@ -178,22 +213,27 @@ var app = angular.module('app',[
 				type: "bar",
 				color: "#d00",
 			    },
-			    legend: {
-				    visible: false,
-				horizontalAlignment: "center",
-				verticalAlignment: "bottom",
-				//position: "inside",
-				//border: { visible: true }
-			    },
-			    commonAxisSettings: {
-				    visible: false,
-			    },
+			    legend: {visible: false,},
+			    commonAxisSettings: {visible: false,},
 			    tooltip: {
 				enabled: true
 			    }
 			};
-			$element.dxChart(options);
-		}
+			var chart = function (v) {
+				console.log("chart panel attrrs", $attrs);
+				switch($attrs.chartName) {
+					case "policies-sold": {
+						options.series.type = "area";
+						options.series.color = "#0d0";
+						options.dataSource = [];
+						for(var i=0;i<50;i++) {options.dataSource.push({ name: i, value: (Math.random()*50)});}
+					} break;
+				}
+				$element.dxChart(options);
+			}
+			$scope.$watch("$attrs.chartName", chart);
+			chart();
+		},
 	};
 }).directive('yoaDoublePanel', function() {
 	return {
@@ -211,13 +251,15 @@ var app = angular.module('app',[
 }).directive('yoaSinglePanel', function() {
 	return {
 		restrict: 'ACE',
-		scope: {bottom:'@'},
+		scope: {bottom:'@', chartName:'@'},
 		transclude: true,
 		templateUrl: 'module/dashboard/partial/panel-single.html',
 		controller: function($scope, $attrs) {
+			console.log("panel attrrs", $attrs.chartName);
 			$scope.title = $attrs.title;
 			$scope.middle = $attrs.middle;
 			$scope.bottom = $attrs.bottom;
+			$scope.chartName = $attrs.chartName;
 		},
 	}
 });
