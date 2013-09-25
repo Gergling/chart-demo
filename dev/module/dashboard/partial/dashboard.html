@@ -32,7 +32,7 @@
 </style>
 
 <div class="row-fluid" data-ng-controller="dashboardController">
-    <h2>Dashboard</h2>
+    <h2>Accounts Dashboard</h2>
 	<div class="span12">
 		<script type="text/javascript">
 			$(function(){ //DOM Ready
@@ -78,6 +78,7 @@
 						data-bottom="23%"
 					></div>
 				</li>
+				<!--<li data-row="2" data-col="2" data-sizex="2" data-sizey="2" class="border background-white"><div data-yoa-chart-bar data-chart-name="risk-types"></div></li>-->
 				<li data-row="2" data-col="2" data-sizex="2" data-sizey="2" class="border background-white" data-ng-include="'module/dashboard/partial/table1.html'"></li>
 
 				<li data-row="3" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double">
@@ -130,8 +131,8 @@
 
 				<li data-row="4" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double">
 					<div data-yoa-double-panel 
-						data-title="# New Accounts" 
-						data-symbol-class="glyphicon glyphicon-star" 
+						data-title="Sum Insured" 
+						data-symbol-class="symbol arrow-up-green" 
 						data-right="50%" 
 						data-bottom="39%"
 					></div>

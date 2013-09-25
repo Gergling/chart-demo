@@ -2,8 +2,9 @@
 	<thead>
 		<tr>
 			<th>Account Type</th>
-			<th>1</th>
-			<th>2</th>
+			<th>Broker</th>
+			<th>Agent</th>
+			<th>Staff</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -13,11 +14,11 @@
 				<div style="width:50px;">
 					<div 
 						style="height:20px;"
-						data-ng-style="{'background-color': row.colour, width: row.max*100+'%'}"
+						data-ng-style="{'background-color': row.producerType.broker.colour, width: row.producerType.broker.value*100+'%'}"
 					></div>
 				</div>
 			</td>
-			<td style="">
+			<td>
 				<div style="width:50px;">
 					<div 
 						style="
@@ -25,9 +26,16 @@
 							border-radius:100%;
 							width:0px;
 							height:0px;
-							/*margin: 0 auto;*/
 						"
-						data-ng-style="{'border-color': row.colour, 'border-width': row.max*10+'px'}"
+						data-ng-style="{'border-color': row.producerType.agent.colour, 'border-width': row.producerType.agent.value*10+'px'}"
+					></div>
+				</div>
+			</td>
+			<td>
+				<div style="width:50px;">
+					<div 
+						style="height:20px;"
+						data-ng-style="{'background-color': row.producerType.staff.colour, width: row.producerType.staff.value*100+'%'}"
 					></div>
 				</div>
 			</td>

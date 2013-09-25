@@ -36,7 +36,14 @@ var app = angular.module('app',[
 				});
 				$.each(summary.data.accounts.quantity.type, function(category, account) {
 					account.max = account.total/summary.data.accounts.quantity.max.type;
-					account.colour = account.max>0.5?'#27d':'#fd2';
+					account.producerType = {
+						broker: {value: Math.random()},
+						agent: {value: Math.random()},
+						staff: {value: Math.random()},
+					};
+					$.each(account.producerType, function(producerType, obj) {
+						obj.colour = obj.value>0.5?'#27d':'#fd2';
+					});
 
 					summary.charts.accounts.quantity.pie.push({category: category, value: account.total});
 				});
@@ -172,21 +179,21 @@ var app = angular.module('app',[
 			    legend: {
 				horizontalAlignment: "center",
 				verticalAlignment: "bottom",
-				//position: "inside",
-				//border: { visible: true }
 			    },
 			    valueAxis: {
 				title: {
 				    text: "Worth (Naira)"
 				}
 			    },
-			    title: "Agent Sales",
+			    title: "Accounts by Executive",
 			    tooltip: {
 				enabled: true
 			    }
 			};
-			switch($attrs.name) {
-				case "revenue": {
+			switch($attrs.chartName) {
+				case "risk-types": {
+					options.valueAxis.title.text = "# Risk Types";
+					options.dataSource
 				} break;
 			}
 			$element.dxChart(options);
