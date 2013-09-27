@@ -29,6 +29,8 @@
 	[data-yoa-single-panel] .middle {text-align:center;padding:11px;}
 	[data-yoa-single-panel] .bottom {left:10px;width:80%;height:90px;bottom:10px;}
 	[data-yoa-double-panel] .glyphicon {font-size:30px;top:8px;left:30px;}
+	
+	[data-yoa-chart] {height:inherit;}
 </style>
 
 <div class="row-fluid" data-ng-controller="dashboardController">
@@ -58,6 +60,7 @@
 						data-title="Revenue" 
 						data-middle="&#8358;868,972" 
 						data-bottom="{{dataSummary}}"
+						data-chart-name="revenuePanel"
 					></div>
 				</li>
 				<li data-row="1" data-col="3" data-sizex="1" data-sizey="1" class="panel-blue-single">
@@ -65,7 +68,7 @@
 						data-title="Policies Sold" 
 						data-middle="1,692" 
 						data-bottom="{{dataSummary}}"
-						data-chart-name="policies-sold"
+						data-chart-name="policiesSold"
 					></div>
 				</li>
 				<li data-row="1" data-col="4" data-sizex="2" data-sizey="2" class="border background-white"><div data-yoa-chart-bar></div></li>
@@ -78,8 +81,8 @@
 						data-bottom="23%"
 					></div>
 				</li>
-				<!--<li data-row="2" data-col="2" data-sizex="2" data-sizey="2" class="border background-white"><div data-yoa-chart-bar data-chart-name="risk-types"></div></li>-->
-				<li data-row="2" data-col="2" data-sizex="2" data-sizey="2" class="border background-white" data-ng-include="'module/dashboard/partial/table1.html'"></li>
+				<li data-row="2" data-col="2" data-sizex="2" data-sizey="1" class="border background-white" data-ng-include="'module/dashboard/partial/table1.html'"></li>
+				<li data-row="3" data-col="2" data-sizex="2" data-sizey="1" class="border background-white" data-ng-include="'module/dashboard/partial/table1.html'"></li>
 
 				<li data-row="3" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double">
 					<div data-yoa-double-panel 
@@ -148,7 +151,7 @@
 				<li data-row="5" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double">
 					<div data-yoa-double-panel 
 						data-title="# of Accounts" 
-						data-symbol-class="icon-factory" 
+						data-symbol-class="symbol arrow-down-red" 
 						data-right="519" 
 						data-bottom="581"
 					></div>
@@ -156,11 +159,12 @@
 				<li data-row="5" data-col="5" data-sizex="1" data-sizey="1" class="panel-blue-double">
 					<div data-yoa-double-panel 
 						data-title="Active Opportunities" 
-						data-symbol-class="icon-plane" 
+						data-symbol-class="symbol arrow-up-green" 
 						data-right="23%" 
 						data-bottom="35%"
 					></div>
 				</li>
+				<li data-row="6" data-col="1" data-sizex="2" data-sizey="1" class="border background-white"><div data-yoa-chart data-chart-name="accountsByAge" style=""></div></li>
 			</ul>
 		</div>
 	</div>

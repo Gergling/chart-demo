@@ -1,14 +1,14 @@
 {
 	"accounts": [
-		{"type":"Individual"},
-		{"type":"Corporate"},
-		{"type":"Scheme"},
-		{"type":"Scheme"},
-		{"type":"Scheme"},
-		{"type":"Scheme"},
-		{"type":"Reinsurance"},
-		{"type":"Reinsurance"},
-		{"type":"Reinsurance"},
-		{"type":"Corporate"}
+		{"type":"Individual", "age": "1"},
+		{"type":"Corporate", "age": "2"},
+		{"type":"Scheme", "age": "3"},
+		{"type":"Scheme", "age": "1"},
+		{"type":"Scheme", "age": "1"},
+		{"type":"Scheme", "age": "2"},
+		{"type":"Reinsurance", "age": "2"},
+		{"type":"Reinsurance", "age": "3"},
+		{"type":"Reinsurance", "age": "3"},
+		{"type":"Corporate", "age": "1"}
 	]
 }

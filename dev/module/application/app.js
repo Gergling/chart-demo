@@ -11,7 +11,9 @@ var app = angular.module('app',[
 				quantity: {
 					total:0, 
 					max: {type:0},
-					type:{}
+					type:{},
+					age:{},
+					producerType:{},
 				}
 			}
 		},
@@ -33,13 +35,16 @@ var app = angular.module('app',[
 					summary.data.accounts.quantity.total++;
 					summary.data.accounts.quantity.type[account.type].total++;
 					summary.data.accounts.quantity.max.type = Math.max(summary.data.accounts.quantity.max.type, summary.data.accounts.quantity.type[account.type].total);
+
+					if (!summary.data.accounts.quantity.age[account.age]) {summary.data.accounts.quantity.age[account.age] = {name: account.age, total:0};}
+					summary.data.accounts.quantity.age[account.age].total++;
 				});
 				$.each(summary.data.accounts.quantity.type, function(category, account) {
 					account.max = account.total/summary.data.accounts.quantity.max.type;
 					account.producerType = {
-						broker: {value: Math.random()},
-						agent: {value: Math.random()},
-						staff: {value: Math.random()},
+						broker: {value: Math.random()+0.1},
+						agent: {value: Math.random()+0.1},
+						staff: {value: Math.random()+0.1},
 					};
 					$.each(account.producerType, function(producerType, obj) {
 						obj.colour = obj.value>0.5?'#27d':'#fd2';
@@ -47,6 +52,9 @@ var app = angular.module('app',[
 
 					summary.charts.accounts.quantity.pie.push({category: category, value: account.total});
 				});
+
+				summary.data.accounts.quantity.producerType.total = {value:0};
+
 				$rootScope.$broadcast("accountsFetched", summary);
 			});
 		},
@@ -55,92 +63,198 @@ var app = angular.module('app',[
 	summary.fetchAccountSummaries();
 
 	return summary;
-}).factory('chartOptions', function ($rootScope, $http) {
-	var options = {
-		getDatasource: function(chartName) {
-			switch(chartName) {
-				//case 
-			}
-		},
-		getOptions: function(chartName) {
-			options.getDatasource(chartName);
-			return {
-				dataSource: dataSource,
-				series: {
-					argumentField: 'category',
-					valueField: 'value',
-				},
-				tooltip: {
-					enabled: true,
-					percentPrecision: 2,
-					customizeText: function (value) {
-						return value.percentText;
+}).factory('chartOptions', function ($rootScope, $http, dataSummary) {
+	var ret = {
+		list: {
+			accountsByType: {
+				options: {
+					//dataSource: dataSource,
+					series: {
+						argumentField: 'category',
+						valueField: 'value',
+					},
+					tooltip: {
+						enabled: true,
+						percentPrecision: 2,
+						customizeText: function (value) {return value.valueText;}
+					},
+					title: {text: 'Accounts by Type'},
+					legend: {
+						horizontalAlignment: 'right',
+						verticalAlignment: 'top'
 					}
 				},
-				title: {
-					text: 'Accounts by Type'
+				getDataSource: function() {
+					var ds = [];
+					$.each(dataSummary.data.accounts.quantity.type, function(type, account) {
+						ds.push({category: type, value: account.total});
+					});
+					return ds;
 				},
-				legend: {
-					horizontalAlignment: 'right',
-					verticalAlignment: 'top'
-				}
-			};
+				fnc: "dxPieChart",
+			},
+			accountsByExecutive: {
+				options: {
+					rotated: true,
+					commonSeriesSettings: {
+						argumentField: "name",
+						type: "stackedBar"
+					},
+					series: [
+						{ valueField: "corporate", name: "Corporate"},
+						{ valueField: "individual", name: "Individual"},
+						{ valueField: "reinsurance", name: "Reinsurance"},
+						{ valueField: "scheme", name: "Scheme"},
+					],
+					legend: {
+						horizontalAlignment: "center",
+						verticalAlignment: "bottom",
+					},
+					valueAxis: {title: {text: "Quantity"}},
+					title: "# Accounts by Executive",
+					tooltip: {enabled: true}
+				},
+				getDataSource: function() {
+					var ds = [
+						{ name: "Alfred"},
+						{ name: "Boris"},
+						{ name: "Charlie"},
+						{ name: "Daniel"},
+						{ name: "Edward"},
+						{ name: "Florence"},
+						{ name: "Gordon"},
+						{ name: "Hannah"},
+						{ name: "Inta"},
+						{ name: "Jack"},
+					];
+					angular.forEach(ds, function(ex) {
+						var total = 0;
+						angular.forEach(ret.list.accountsByExecutive.options.series, function(accountType) {
+							var value = Math.floor(Math.random()*30);
+							ex[accountType.valueField] = value;
+							total += value;
+						});
+						ex.total = total;
+					});
+					return ds;
+				},
+				fnc: "dxChart",
+			},
+			revenuePanel: {
+				options: {
+					series: {
+						argumentField: "name",
+						valueField: "value",
+						type: "bar",
+						color: "#d00",
+					},
+					legend: {visible: false,},
+					commonAxisSettings: {visible: false,},
+					tooltip: {enabled: true}
+				},
+				getDataSource: function() {
+					return [
+						{ name: "1", value: 30.354},
+						{ name: "2", value: 25.607},
+						{ name: "3", value: 20.493},
+					];
+				},
+				fnc: "dxChart",
+			},
+			policiesSold: {
+				options: {
+					series: {
+						argumentField: "name",
+						valueField: "value",
+						type: "area",
+						color: "#0d0",
+					},
+					legend: {visible: false,},
+					commonAxisSettings: {visible: false,},
+					tooltip: {enabled: true}
+				},
+				getDataSource: function() {
+					var ds = [];
+					for(var i=0;i<50;i++) {ds.push({ name: i, value: (Math.random()*25)+25});}
+					return ds;
+				},
+				fnc: "dxChart",
+			},
+			accountsByAge: {
+				options: {
+					series: {
+						argumentField: 'category',
+						valueField: 'value',
+					},
+					tooltip: {
+						enabled: true,
+						//percentPrecision: 2,
+						customizeText: function (value) {return value.valueText;}
+					},
+					title: {text: 'Accounts by Age'},
+					legend: {
+						horizontalAlignment: 'right',
+						verticalAlignment: 'top'
+					}
+				},
+				getDataSource: function() {
+					var ds = [];
+					$.each(dataSummary.data.accounts.quantity.age, function(age, account) {
+						ds.push({category: age, value: account.total});
+					});
+					return ds;
+				},
+				fnc: "dxPieChart",
+			},
+		},
+		getDatasource: function(chartName) {
+			return ret.list[chartName].getDataSource(chartName);
+		},
+		getOptions: function(chartName) {
+			var dataSource = ret.getDatasource(chartName);
+			var options = ret.list[chartName].options;
+			options.dataSource = dataSource;
+			return options;
+		},
+		getConfig: function(chartName) {
+			if (!ret.list[chartName]) {throw "Factory chartOptions: No chart named '"+chartName+"'.";}
+			return ret.list[chartName];
+		},
+		appendChart: function(element, chartName) {
+			var config = ret.getConfig(chartName);
+			var fnc = config.fnc;
+			var options = ret.getOptions(chartName);
+			element[fnc](options);
 		},
 	};
 
-	return options;
+	return ret;
 }).controller('dashboardController', function($scope, dataSummary) {
-	// We will want multiple dashboards in the future. They will extend this one.
-
-	// For now, this dashboard controls the (default) page content.
-	
-	// Widgets:
-	// - Number of accounts (number)
-	// - Number of accounts by type (pie)
-	// - Number of accounts by producer type (pie)
-	// - Number of contacts (number)
-	// - Number of contacts by gender (pie)
-
 	$scope.accountQuantities = dataSummary.data.accounts.quantity;
 	$scope.dataSummary = dataSummary;
-
-	
+}).directive('yoaChart', function() {
+	return {
+		restrict: 'ACE',
+		transclude: true,
+		scope: {chartName:"@"},
+		controller: function($scope, $element, dataSummary, $attrs, chartOptions) {
+			$scope.$watch("$attrs.chartName", function () {
+				$scope.$on("accountsFetched", function(event, data){
+					// The only way to make this work was to ensure the chart name had been updated before the appropriate chart was appended.
+					// This behaviour would best be a staple function for all chart displaying directives.
+					chartOptions.appendChart($element, $attrs.chartName);
+				});
+			});
+		},
+	};	
 }).directive('yoaChartPie', function() {
 	return {
 		restrict: 'ACE',
 		transclude: true,
-		controller: function($scope, $element, dataSummary, $attrs) {
-			var options = {
-				dataSource: [],
-				series: {
-					argumentField: 'category',
-					valueField: 'value',
-				},
-				tooltip: {
-					enabled: true,
-					percentPrecision: 2,
-					customizeText: function (value) {
-						return value.percentText;
-					}
-				},
-				title: {
-					text: 'Accounts by Type'
-				},
-				legend: {
-					horizontalAlignment: 'right',
-					verticalAlignment: 'top'
-				}
-			};
+		controller: function($scope, $element, dataSummary, $attrs, chartOptions) {
 			$scope.$on("accountsFetched", function(event, data){
-				var ds = [];
-				$.each(data.data.accounts.quantity.type, function(type, account) {
-					ds.push({category: type, value: account.total});
-				});
-				console.log(options);
-				//if (!options) {var options = {};}
-				options.dataSource = ds;
-
-				$element.dxPieChart(options);
+				// Ultimately all data will come from a service which will need to fire an event when complete.
+				chartOptions.appendChart($element, "accountsByType");
 			});
 		},
 	};
@@ -148,55 +262,8 @@ var app = angular.module('app',[
 	return {
 		restrict: 'ACE',
 		transclude: true,
-		controller: function($scope, $element, dataSummary, $attrs) {
-			var chartDataSource = [
-			    { name: "Alfred", standard: 29.956, declaration: 90.354, "package": 14.472},
-			    { name: "Boris", standard: 25.607, declaration: 55.793, "package": 23.727},
-			    { name: "Charlie", standard: 13.493, declaration: 48.983, "package": 5.802},
-			    { name: "Daniel", standard: 9.575, declaration: 43.363, "package": 9.024},
-			    { name: "Edward", standard: 9.575, declaration: 43.363, "package": 9.024},
-			    { name: "Florence", standard: 9.575, declaration: 43.363, "package": 9.024},
-			    { name: "Gordon", standard: 9.575, declaration: 43.363, "package": 9.024},
-			    { name: "Hannah", standard: 9.575, declaration: 43.363, "package": 9.024},
-			    { name: "Inta", standard: 9.575, declaration: 43.363, "package": 9.024},
-			    { name: "Jack", standard: 9.575, declaration: 43.363, "package": 9.024},
-			    { name: "Kevin", standard: 9.575, declaration: 43.363, "package": 9.024},
-			    { name: "Langachlacrannachan", standard: 9.575, declaration: 43.363, "package": 9.024},
-			];
-			
-			var options = {
-				rotated: true,
-			    dataSource: chartDataSource,
-			    commonSeriesSettings: {
-				argumentField: "name",
-				type: "stackedBar"
-			    },
-			    series: [
-				{ valueField: "standard", name: "Standard", stack: "male" },
-				{ valueField: "declaration", name: "Declaration", stack: "male" },
-				{ valueField: "package", name: "Package", stack: "male" },
-			    ],
-			    legend: {
-				horizontalAlignment: "center",
-				verticalAlignment: "bottom",
-			    },
-			    valueAxis: {
-				title: {
-				    text: "Worth (Naira)"
-				}
-			    },
-			    title: "Accounts by Executive",
-			    tooltip: {
-				enabled: true
-			    }
-			};
-			switch($attrs.chartName) {
-				case "risk-types": {
-					options.valueAxis.title.text = "# Risk Types";
-					options.dataSource
-				} break;
-			}
-			$element.dxChart(options);
+		controller: function($scope, $element, dataSummary, $attrs, chartOptions) {
+			chartOptions.appendChart($element, "accountsByExecutive");
 		}
 	};
 }).directive('yoaChartPanel', function() {
@@ -204,42 +271,12 @@ var app = angular.module('app',[
 		restrict: 'ACE',
 		transclude: true,
 		scope: {chartName:"@"},
-		controller: function($scope, $element, dataSummary, $attrs) {
-			var chartDataSource = [
-			    { name: "1", value: 30.354},
-			    { name: "2", value: 25.607},
-			    { name: "3", value: 20.493},
-			];
-			
-			var options = {
-			    dataSource: chartDataSource,
-			    series: {
-				argumentField: "name",
-				valueField: "value",
-				name: "Revenue",
-				type: "bar",
-				color: "#d00",
-			    },
-			    legend: {visible: false,},
-			    commonAxisSettings: {visible: false,},
-			    tooltip: {
-				enabled: true
-			    }
-			};
-			var chart = function (v) {
-				console.log("chart panel attrrs", $attrs);
-				switch($attrs.chartName) {
-					case "policies-sold": {
-						options.series.type = "area";
-						options.series.color = "#0d0";
-						options.dataSource = [];
-						for(var i=0;i<50;i++) {options.dataSource.push({ name: i, value: (Math.random()*50)});}
-					} break;
-				}
-				$element.dxChart(options);
-			}
-			$scope.$watch("$attrs.chartName", chart);
-			chart();
+		controller: function($scope, $element, dataSummary, $attrs, chartOptions) {
+			$scope.$watch("$attrs.chartName", function () {
+				// The only way to make this work was to ensure the chart name had been updated before the appropriate chart was appended.
+				// This behaviour would best be a staple function for all chart displaying directives.
+				chartOptions.appendChart($element, $attrs.chartName);
+			});
 		},
 	};
 }).directive('yoaDoublePanel', function() {
