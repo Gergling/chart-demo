@@ -1,6 +1,13 @@
 var app = angular.module('app',[
 	//"module.dashboard",
-]).factory('dataSummary', function ($rootScope, $http) {
+]).config(['$routeProvider', function($routeProvider) {
+	$routeProvider
+		.when('/', {templateUrl: 'module/dashboard/partial/overview.html'})
+		.when('/overview', {templateUrl: 'module/dashboard/partial/overview.html'})
+		.when('/accounts', {templateUrl: 'module/dashboard/partial/dashboard-accounts.html'})
+		.otherwise({redirectTo: '/sldjbfv'})
+	;
+}]).factory('dataSummary', function ($rootScope, $http) {
 	// Ultimately a url will be generated relevant to the resource location, for now we're using fake data all from one source.
 	var url = "module/dashboard/summary-mockery.json";
 	var getURL = function() {return url;}
@@ -24,6 +31,7 @@ var app = angular.module('app',[
 				},
 			},
 		},
+		loaded: false,
 		getAccountQuantities: function() {
 			return summary.data.accounts.quantity;
 		},
@@ -31,29 +39,42 @@ var app = angular.module('app',[
 			$http.get(getURL("account")).then(function (response) {
 				summary.data.accounts.list = response.accounts;
 				angular.forEach(response.data.accounts, function(account) {
-					if (!summary.data.accounts.quantity.type[account.type]) {summary.data.accounts.quantity.type[account.type] = {name: account.type, total:0};}
+					if (!summary.data.accounts.quantity.type[account.type]) {summary.data.accounts.quantity.type[account.type] = {name: account.type, total: 0, producerType: {}};}
 					summary.data.accounts.quantity.total++;
 					summary.data.accounts.quantity.type[account.type].total++;
 					summary.data.accounts.quantity.max.type = Math.max(summary.data.accounts.quantity.max.type, summary.data.accounts.quantity.type[account.type].total);
 
+					if (!summary.data.accounts.quantity.type[account.type].producerType[account.producerType]) {summary.data.accounts.quantity.type[account.type].producerType[account.producerType] = {total:0}}
+					summary.data.accounts.quantity.type[account.type].producerType[account.producerType].total++;
+
 					if (!summary.data.accounts.quantity.age[account.age]) {summary.data.accounts.quantity.age[account.age] = {name: account.age, total:0};}
 					summary.data.accounts.quantity.age[account.age].total++;
+
+					if (!summary.data.accounts.quantity.producerType[account.producerType]) {summary.data.accounts.quantity.producerType[account.producerType] = {name: account.producerType, total:0}}
+					summary.data.accounts.quantity.producerType[account.producerType].total++;
 				});
 				$.each(summary.data.accounts.quantity.type, function(category, account) {
+					var accountType = category;
 					account.max = account.total/summary.data.accounts.quantity.max.type;
-					account.producerType = {
-						broker: {value: Math.random()+0.1},
-						agent: {value: Math.random()+0.1},
-						staff: {value: Math.random()+0.1},
-					};
+					/*account.producerType = {
+						broker: {value: Math.random()},
+						agent: {value: Math.random()},
+						staff: {value: Math.random()},
+					};*/
 					$.each(account.producerType, function(producerType, obj) {
+						obj.value = obj.total/account.total;
 						obj.colour = obj.value>0.5?'#27d':'#fd2';
+						//obj.value.
+
+						//if (!summary.data.accounts.quantity.producerType[producerType]) {summary.data.accounts.quantity.producerType[producerType] = {total:0}}
+						//summary.data.accounts.quantity.producerType[producerType].total+=obj.value;
 					});
 
 					summary.charts.accounts.quantity.pie.push({category: category, value: account.total});
 				});
 
-				summary.data.accounts.quantity.producerType.total = {value:0};
+				//summary.data.accounts.quantity.producerType.total = {value:0};
+				summary.loaded = true;
 
 				$rootScope.$broadcast("accountsFetched", summary);
 			});
@@ -76,7 +97,7 @@ var app = angular.module('app',[
 					tooltip: {
 						enabled: true,
 						percentPrecision: 2,
-						customizeText: function (value) {return value.valueText;}
+						customizeText: function (value) {return value.valueText+" of type "+value.argumentText;}
 					},
 					title: {text: 'Accounts by Type'},
 					legend: {
@@ -189,7 +210,7 @@ var app = angular.module('app',[
 					tooltip: {
 						enabled: true,
 						//percentPrecision: 2,
-						customizeText: function (value) {return value.valueText;}
+						customizeText: function (value) {return value.valueText+" of age "+value.argumentText;}
 					},
 					title: {text: 'Accounts by Age'},
 					legend: {
@@ -239,10 +260,15 @@ var app = angular.module('app',[
 		scope: {chartName:"@"},
 		controller: function($scope, $element, dataSummary, $attrs, chartOptions) {
 			$scope.$watch("$attrs.chartName", function () {
+				var appendChart = function() {
+					chartOptions.appendChart($element, $attrs.chartName);
+				};
+				if (dataSummary.loaded) {appendChart();}
 				$scope.$on("accountsFetched", function(event, data){
 					// The only way to make this work was to ensure the chart name had been updated before the appropriate chart was appended.
 					// This behaviour would best be a staple function for all chart displaying directives.
-					chartOptions.appendChart($element, $attrs.chartName);
+					//chartOptions.appendChart($element, $attrs.chartName);
+					appendChart();
 				});
 			});
 		},
@@ -252,6 +278,9 @@ var app = angular.module('app',[
 		restrict: 'ACE',
 		transclude: true,
 		controller: function($scope, $element, dataSummary, $attrs, chartOptions) {
+			if (dataSummary.loaded) {
+				chartOptions.appendChart($element, "accountsByType");
+			}
 			$scope.$on("accountsFetched", function(event, data){
 				// Ultimately all data will come from a service which will need to fire an event when complete.
 				chartOptions.appendChart($element, "accountsByType");
@@ -299,7 +328,6 @@ var app = angular.module('app',[
 		transclude: true,
 		templateUrl: 'module/dashboard/partial/panel-single.html',
 		controller: function($scope, $attrs) {
-			console.log("panel attrrs", $attrs.chartName);
 			$scope.title = $attrs.title;
 			$scope.middle = $attrs.middle;
 			$scope.bottom = $attrs.bottom;

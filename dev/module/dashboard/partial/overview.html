@@ -1,0 +1,78 @@
+<link rel="stylesheet" href="module/dashboard/css/style.css"/>
+
+<div class="row-fluid" data-ng-controller="dashboardController">
+    <h2>Overview Dashboard</h2>
+	<div class="span12">
+		<script type="text/javascript">
+			$(function(){ //DOM Ready
+
+				$(".gridster ul").gridster({
+					widget_margins: [10, 10],
+					widget_base_dimensions: [207, 206]
+				});
+			});
+		</script>
+		<div class="gridster">
+			<ul>
+				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+					<div data-yoa-double-panel=""
+						data-title="# Opportunities" 
+						data-symbol-class="symbol arrow-up-green" 
+						data-right="478" 
+						data-bottom="+14"
+					></div>
+				</li>
+				<li data-row="1" data-col="2" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+					<div data-yoa-double-panel=""
+						data-title="# Accounts" 
+						data-symbol-class="symbol arrow-down-red" 
+						data-right="38" 
+						data-bottom="-1"
+					></div>
+				</li>
+				<li data-row="1" data-col="3" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+					<div data-yoa-double-panel=""
+						data-title="# Contacts" 
+						data-symbol-class="symbol arrow-up-green" 
+						data-right="780" 
+						data-bottom="+21"
+					></div>
+				</li>
+
+				<li data-row="2" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+					<div data-yoa-double-panel=""
+						data-title="# Policies" 
+						data-symbol-class="symbol arrow-down-red" 
+						data-right="639" 
+						data-bottom="-7"
+					></div>
+				</li>
+				<li data-row="2" data-col="2" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+					<div data-yoa-double-panel=""
+						data-title="# Risks" 
+						data-symbol-class="symbol arrow-up-green" 
+						data-right="712" 
+						data-bottom="+2"
+					></div>
+				</li>
+				<li data-row="2" data-col="3" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+					<div data-yoa-double-panel=""
+						data-title="# Claims" 
+						data-symbol-class="symbol arrow-down-red" 
+						data-right="405" 
+						data-bottom="-19"
+					></div>
+				</li>
+
+				<li data-row="3" data-col="2" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+					<div data-yoa-double-panel=""
+						data-title="# Insurers" 
+						data-symbol-class="symbol arrow-up-green" 
+						data-right="512" 
+						data-bottom="+32"
+					></div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

@@ -24,7 +24,22 @@
 	<script src="module/dashboard/controller/dashboardController.js"></script>-->
   </head>
   <body style="background-image: url(http://maestro-demo.sisense.com/GuidedTourSample/Images/background.png);">
-    <div class="container" data-ng-include="'module/dashboard/partial/dashboard.html'">
-    </div>
+	<!--<div class="container" data-ng-include="'module/dashboard/partial/dashboard.html'"></div>-->
+	<!--<div class="container" data-ng-include="'module/dashboard/partial/overview.html'"></div>-->
+	<div class="container">
+		<div class="row">
+			<div class="span12">
+				<ul class="nav nav-pills">
+					<li class="well"><a href="#/overview" class="ng-binding">Overview</a></li>
+					<li class="well"><a href="#/accounts" class="ng-binding">Accounts</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span12">
+				<div class="container" data-ng-view></div>
+			</div>
+		</div>
+	</div>
   </body>
 </html>

@@ -1,0 +1,74 @@
+<div class="chart-panel-accounts-by-producer">
+
+	<div style="text-align:center;">Accounts by Producer</div>
+
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Account Type</th>
+				<th>Broker ({{dataSummary.data.accounts.quantity.producerType.Broker.total}})</th>
+				<th>Agent ({{dataSummary.data.accounts.quantity.producerType.Agent.total}})</th>
+				<th>Staff ({{dataSummary.data.accounts.quantity.producerType.Staff.total}})</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr data-ng-repeat="row in accountQuantities.type">
+				<td>{{row.name}} ({{row.total}})</td>
+				<td>
+					<div class="chart-bar">
+						<div class="chart-bar-outer">
+							<div 
+								style="height:20px;"
+								data-ng-style="{
+									'background-color': row.producerType.Broker.colour, 
+									width: row.producerType.Broker.value*100+'%'
+								}"
+							></div>
+						</div>
+						<div class="chart-bar-number">{{row.producerType.Broker.total}}</div>
+					</div>
+				</td>
+				<td>
+					<!--<div style="width:50px;">
+						<div 
+							style="
+								border-style:solid;
+								border-radius:100%;
+								width:0px;
+								height:0px;
+							"
+							data-ng-style="{'border-color': row.producerType.Agent.colour, 'border-width': row.producerType.Agent.value*10+'px'}"
+						></div>
+					</div>-->
+					<div class="chart-bar">
+						<div class="chart-bar-outer">
+							<div class="chart-bar-circle" data-ng-style="{'border-color': row.producerType.Agent.colour, 'border-width': row.producerType.Agent.value*10+'px'}"></div>
+						</div>
+						<div class="chart-bar-number">{{row.producerType.Agent.total}}</div>
+					</div>
+
+				</td>
+				<td>
+					<!--<div style="width:50px;">
+						<div 
+							style="height:20px;"
+							data-ng-style="{'background-color': row.producerType.Staff.colour, width: row.producerType.Staff.value*100+'%'}"
+						></div>
+					</div>-->
+					<div class="chart-bar">
+						<div class="chart-bar-outer">
+							<div 
+								style="height:20px;"
+								data-ng-style="{
+									'background-color': row.producerType.Staff.colour, 
+									width: row.producerType.Staff.value*100+'%'
+								}"
+							></div>
+						</div>
+						<div class="chart-bar-number">{{row.producerType.Staff.total}}</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

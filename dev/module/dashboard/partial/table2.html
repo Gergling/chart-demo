@@ -1,0 +1,50 @@
+<div class="chart-panel-accounts-by-producer">
+
+	<div style="text-align:center;">Accounts by Bank</div>
+
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Account Type</th>
+				<th>Broker ({{dataSummary.data.accounts.quantity.producerType.Broker.total}})</th>
+				<th>Agent ({{dataSummary.data.accounts.quantity.producerType.Agent.total}})</th>
+				<th>Staff ({{dataSummary.data.accounts.quantity.producerType.Staff.total}})</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr data-ng-repeat="row in accountQuantities.type">
+				<td>{{row.name}} ({{row.total}})</td>
+				<td>
+					<div style="width:50px;">
+						<div 
+							style="height:20px;"
+							data-ng-style="{'background-color': row.producerType.broker.colour, width: row.producerType.broker.value*100+'%'}"
+						></div>
+					</div>
+					{{row.producerType.broker.value}}
+				</td>
+				<td>
+					<div style="width:50px;">
+						<div 
+							style="
+								border-style:solid;
+								border-radius:100%;
+								width:0px;
+								height:0px;
+							"
+							data-ng-style="{'border-color': row.producerType.agent.colour, 'border-width': row.producerType.agent.value*10+'px'}"
+						></div>
+					</div>
+				</td>
+				<td>
+					<div style="width:50px;">
+						<div 
+							style="height:20px;"
+							data-ng-style="{'background-color': row.producerType.staff.colour, width: row.producerType.staff.value*100+'%'}"
+						></div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
