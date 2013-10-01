@@ -250,26 +250,6 @@ var app = angular.module('app',[
 				fnc: "dxChart",
 			},
 			newRecordsByTimeFrame: {
-				options: {
-					rotated: true,
-					commonSeriesSettings: {
-						argumentField: "name",
-						type: "stackedBar"
-					},
-					series: [
-						{ valueField: "corporate", name: "Corporate"},
-						{ valueField: "individual", name: "Individual"},
-						{ valueField: "reinsurance", name: "Reinsurance"},
-						{ valueField: "scheme", name: "Scheme"},
-					],
-					legend: {
-						horizontalAlignment: "center",
-						verticalAlignment: "bottom",
-					},
-					valueAxis: {title: {text: "Quantity"}},
-					title: "# Records by Executive",
-					tooltip: {enabled: true}
-				},
 				getOptions: function() {
 					var title = dataSummary.meta.getModule().label;
 					var timeFrame = dataSummary.meta.getTimeFrame().label;
@@ -305,8 +285,26 @@ var app = angular.module('app',[
 						quarterly: "Quarter",
 						yearly: "Year",
 					};
-					for(var i=1;i<13;i++) {
-						ds.push({ name: timeFrameMapping[timeFrame]+" "+i });
+					if (timeFrame=="weekly") {
+						var pad = function(string, number) {
+							// Pads string out to number of digits with 0s.
+							return (new Array((number+1)-string.length).join('0'))+string;
+						};
+						var now = new Date();
+						var monday = new Date(now);
+						monday.setDate(monday.getDate() - monday.getDay() + 1);
+						for(var i=1;i<13;i++) {
+							monday.setDate(monday.getDate() - 7);
+							var day = pad(monday.getDate()+"", 2);
+							var month = pad((monday.getMonth()+1)+"", 2);
+							var year = monday.getFullYear();
+							var axisValue = day+"/"+month+"/"+year;
+							ds.push({ name: axisValue });
+						}
+					} else {
+						for(var i=12;i>0;i--) {
+							ds.push({ name: timeFrameMapping[timeFrame]+" "+i });
+						}
 					}
 					
 					// Fake data generator
@@ -324,7 +322,7 @@ var app = angular.module('app',[
 					multiplier *= timeFrameMultiplier[timeFrame];
 					angular.forEach(ds, function(ex) {
 						var total = 0;
-						angular.forEach(ret.list.newRecordsByTimeFrame.options.series, function(accountType) {
+						angular.forEach(ret.list.newRecordsByTimeFrame.getOptions().series, function(accountType) {
 							var value = Math.floor(Math.random()*multiplier);
 							ex[accountType.valueField] = value;
 							total += value;
@@ -408,8 +406,9 @@ var app = angular.module('app',[
 		getOptions: function(chartName) {
 			var dataSource = ret.getDatasource(chartName);
 			var config = ret.getConfig(chartName);
-			var options = config.options;
-			if (config.getOptions) {options = config.getOptions();}
+			var options = {};
+			if (config.getOptions) {options = config.getOptions();} else {options = config.options;}
+			
 			options.dataSource = dataSource;
 			return options;
 		},
