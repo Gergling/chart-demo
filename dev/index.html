@@ -23,28 +23,8 @@
 	<!--<script src="module/dashboard/factory/dashboardFactory.js"></script>
 	<script src="module/dashboard/controller/dashboardController.js"></script>-->
   </head>
-  <body style="background-image: url(module/application/images/background.png);" data-ng-controller="dashboardController">
-	<!--<div class="container" data-ng-include="'module/dashboard/partial/dashboard.html'"></div>-->
-	<!--<div class="container" data-ng-include="'module/dashboard/partial/overview.html'"></div>-->
+  <body style="background-image: url(module/application/images/background.png);">
 	<div class="container">
-		<div class="row">
-			<div class="span12">
-				<ul class="nav nav-pills">
-					<li data-ng-repeat="tab in nav.primary.index.order" class="well" data-ng-class="{active: tab.name == nav.primary.current.name}">
-						<a href="#/{{tab.name}}">{{tab.label}}</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div class="row">
-			<div class="span12">
-				<ul class="nav nav-pills">
-					<li data-ng-repeat="tab in nav.secondary.index.order" class="well" data-ng-class="{active: tab.name == nav.secondary.current.name}">
-						<a href="#/{{nav.primary.current.name}}/{{tab.name}}">{{tab.label}}</a>
-					</li>
-				</ul>
-			</div>
-		</div>
 		<div class="row">
 			<div class="span12">
 				<div class="container" data-ng-view></div>

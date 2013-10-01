@@ -2,11 +2,10 @@ var app = angular.module('app',[
 	//"module.dashboard",
 ]).config(['$routeProvider', function($routeProvider) {
 	//var nav = Navigation.getInstance();
-	$routeProvider.when('/', {templateUrl: 'module/dashboard/partial/overview.html'});
-	$routeProvider.when('/overview', {templateUrl: 'module/dashboard/partial/overview.html'}); // Find a way to remove this one.
-	$routeProvider.when('/overview/:timeFrame', {templateUrl: 'module/dashboard/partial/overview.html'}); // Find a way to remove this one.
-	$routeProvider.when('/:module', {templateUrl: 'module/dashboard/partial/module-reports.html'});
-	$routeProvider.when('/:module/:timeFrame', {templateUrl: 'module/dashboard/partial/module-reports.html'});
+	var templateUrl = 'module/dashboard/partial/container.html';
+	$routeProvider.when('/', {templateUrl: templateUrl});
+	$routeProvider.when('/:module', {templateUrl: templateUrl});
+	$routeProvider.when('/:module/:timeFrame', {templateUrl: templateUrl});
 	$routeProvider.otherwise({templateUrl: 'module/application/partial/404.html'});
 }]).controller('dashboardController', function($scope, dataSummary, navigation) {
 	$scope.accountQuantities = dataSummary.data.accounts.quantity;
@@ -75,7 +74,10 @@ var app = angular.module('app',[
 
 	// Primary navigation operations.
 	angular.forEach(navigation.primary.list, function(item) {
-		item.templateUrl = 'module/dashboard/partial/module-reports.html';
+		if (!item.templateUrl) {
+			// If this is not specified, populate with module reporting partial.
+			item.templateUrl = 'module/dashboard/partial/module-reports.html';
+		}
 	});
 
 	navigation.setCurrent = function(tier, name) {
