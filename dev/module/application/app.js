@@ -16,6 +16,8 @@ var app = angular.module('app',[
 	$scope.$on('$routeChangeSuccess', function (scope, current, previous) {
 		navigation.setCurrent("primary", current.params.module);
 		navigation.setCurrent("secondary", current.params.timeFrame);
+		
+		dataSummary.meta.setNavigation();
 	});
 }).factory('navigation', function ($rootScope) {
 	var navigation = {
@@ -90,7 +92,7 @@ var app = angular.module('app',[
 	};
 
 	return navigation;
-}).factory('dataSummary', function ($rootScope, $http) {
+}).factory('dataSummary', function ($rootScope, $http, navigation) {
 	// Ultimately a url will be generated relevant to the resource location, for now we're using fake data all from one source.
 	var url = "module/dashboard/summary-mockery.json";
 	var getURL = function() {return url;}
@@ -152,6 +154,18 @@ var app = angular.module('app',[
 				$rootScope.$broadcast("accountsFetched", summary);
 			});
 		},
+		meta: {
+			data: {
+				module: navigation.primary.list.opportunities,
+				timeFrame: navigation.secondary.list[navigation.secondary.unspecified],
+			},
+			setNavigation: function() {
+				summary.meta.data.module = navigation.primary.current;
+				summary.meta.data.timeFrame = navigation.secondary.current;
+			},
+			getModule: function() {return summary.meta.data.module;},
+			getTimeFrame: function() {return summary.meta.data.timeFrame;},
+		},
 	};
 
 	summary.fetchAccountSummaries();
@@ -209,6 +223,7 @@ var app = angular.module('app',[
 					tooltip: {enabled: true}
 				},
 				getDataSource: function() {
+					console.error("error?");
 					var ds = [
 						{ name: "Alfred"},
 						{ name: "Boris"},
@@ -225,6 +240,92 @@ var app = angular.module('app',[
 						var total = 0;
 						angular.forEach(ret.list.accountsByExecutive.options.series, function(accountType) {
 							var value = Math.floor(Math.random()*30);
+							ex[accountType.valueField] = value;
+							total += value;
+						});
+						ex.total = total;
+					});
+					return ds;
+				},
+				fnc: "dxChart",
+			},
+			newRecordsByTimeFrame: {
+				options: {
+					rotated: true,
+					commonSeriesSettings: {
+						argumentField: "name",
+						type: "stackedBar"
+					},
+					series: [
+						{ valueField: "corporate", name: "Corporate"},
+						{ valueField: "individual", name: "Individual"},
+						{ valueField: "reinsurance", name: "Reinsurance"},
+						{ valueField: "scheme", name: "Scheme"},
+					],
+					legend: {
+						horizontalAlignment: "center",
+						verticalAlignment: "bottom",
+					},
+					valueAxis: {title: {text: "Quantity"}},
+					title: "# Records by Executive",
+					tooltip: {enabled: true}
+				},
+				getOptions: function() {
+					var title = dataSummary.meta.getModule().label;
+					var timeFrame = dataSummary.meta.getTimeFrame().label;
+					// Generate different serieses.
+					return {
+						rotated: true,
+						commonSeriesSettings: {
+							argumentField: "name",
+							type: "stackedBar"
+						},
+						series: [
+							{ valueField: "corporate", name: "Corporate"},
+							{ valueField: "individual", name: "Individual"},
+							{ valueField: "reinsurance", name: "Reinsurance"},
+							{ valueField: "scheme", name: "Scheme"},
+						],
+						legend: {
+							horizontalAlignment: "center",
+							verticalAlignment: "bottom",
+						},
+						valueAxis: {title: {text: "Quantity"}},
+						title: "# "+title+" "+timeFrame,
+						tooltip: {enabled: true}
+					};
+				},
+				getDataSource: function() {
+					var ds = [];
+					var module = dataSummary.meta.getModule().name;
+					var timeFrame = dataSummary.meta.getTimeFrame().name;
+					var timeFrameMapping = {
+						weekly: "Week",
+						monthly: "Month",
+						quarterly: "Quarter",
+						yearly: "Year",
+					};
+					for(var i=1;i<13;i++) {
+						ds.push({ name: timeFrameMapping[timeFrame]+" "+i });
+					}
+					
+					// Fake data generator
+					var multiplier = 1;
+					var moduleMultiplier = {
+						accounts: 2,
+					};
+					multiplier *= (moduleMultiplier[module] || 10);
+					var timeFrameMultiplier = {
+						weekly: 1,
+						monthly: 4,
+						quarterly: 12,
+						yearly: 48,
+					};
+					multiplier *= timeFrameMultiplier[timeFrame];
+					angular.forEach(ds, function(ex) {
+						var total = 0;
+						angular.forEach(ret.list.newRecordsByTimeFrame.options.series, function(accountType) {
+							var value = Math.floor(Math.random()*multiplier);
 							ex[accountType.valueField] = value;
 							total += value;
 						});
@@ -306,7 +407,9 @@ var app = angular.module('app',[
 		},
 		getOptions: function(chartName) {
 			var dataSource = ret.getDatasource(chartName);
-			var options = ret.list[chartName].options;
+			var config = ret.getConfig(chartName);
+			var options = config.options;
+			if (config.getOptions) {options = config.getOptions();}
 			options.dataSource = dataSource;
 			return options;
 		},
