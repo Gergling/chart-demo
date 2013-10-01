@@ -1,8 +1,8 @@
 <link rel="stylesheet" href="module/dashboard/css/style.css"/>
 <link rel="stylesheet" href="module/dashboard/css/layout.css"/>
 
-<div class="row-fluid" data-ng-controller="dashboardController">
-    <h2>Accounts Dashboard</h2>
+<div class="row-fluid">
+    <h2>{{nav.primary.current.label}} {{nav.secondary.current.label}} Dashboard</h2>
 	<div class="span12">
 		<script type="text/javascript">
 			$(function(){ //DOM Ready
@@ -39,7 +39,7 @@
 						data-chart-name="policiesSold"
 					></div>
 				</li>
-				<li data-row="1" data-col="4" data-sizex="2" data-sizey="2" class="border background-white"><div data-yoa-chart-bar></div></li>
+				<li data-row="1" data-col="4" data-sizex="2" data-sizey="2" class="border background-white"><div data-yoa-chart data-chart-name="accountsByExecutive"></div></li>
 
 				<li data-row="2" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
 					<div data-yoa-double-panel 
@@ -61,7 +61,7 @@
 					></div>
 				</li>
 
-				<li data-row="3" data-col="4" data-sizex="2" data-sizey="1" class="border background-white"><div data-yoa-chart-pie class="chart"></div></li>
+				<li data-row="3" data-col="4" data-sizex="2" data-sizey="1" class="border background-white"><div data-yoa-chart data-chart-name="accountsByType" class="chart"></div></li>
 
 				<li data-row="4" data-col="1" data-sizex="3" data-sizey="2" class="border background-white">
 					<table class="table table-bordered">

@@ -1,13 +1,94 @@
 var app = angular.module('app',[
 	//"module.dashboard",
 ]).config(['$routeProvider', function($routeProvider) {
-	$routeProvider
-		.when('/', {templateUrl: 'module/dashboard/partial/overview.html'})
-		.when('/overview', {templateUrl: 'module/dashboard/partial/overview.html'})
-		.when('/accounts', {templateUrl: 'module/dashboard/partial/dashboard-accounts.html'})
-		.otherwise({redirectTo: '/sldjbfv'})
-	;
-}]).factory('dataSummary', function ($rootScope, $http) {
+	//var nav = Navigation.getInstance();
+	$routeProvider.when('/', {templateUrl: 'module/dashboard/partial/overview.html'});
+	$routeProvider.when('/overview', {templateUrl: 'module/dashboard/partial/overview.html'}); // Find a way to remove this one.
+	$routeProvider.when('/overview/:timeFrame', {templateUrl: 'module/dashboard/partial/overview.html'}); // Find a way to remove this one.
+	$routeProvider.when('/:module', {templateUrl: 'module/dashboard/partial/module-reports.html'});
+	$routeProvider.when('/:module/:timeFrame', {templateUrl: 'module/dashboard/partial/module-reports.html'});
+	$routeProvider.otherwise({templateUrl: 'module/application/partial/404.html'});
+}]).controller('dashboardController', function($scope, dataSummary, navigation) {
+	$scope.accountQuantities = dataSummary.data.accounts.quantity;
+	$scope.dataSummary = dataSummary;
+
+	$scope.nav = navigation;
+
+	$scope.$on('$routeChangeSuccess', function (scope, current, previous) {
+		navigation.setCurrent("primary", current.params.module);
+		navigation.setCurrent("secondary", current.params.timeFrame);
+	});
+}).factory('navigation', function ($rootScope) {
+	var navigation = {
+		primary: {
+			list: {
+				"overview": {label: "Overview", templateUrl: 'module/dashboard/partial/overview.html'},
+				"opportunities": {label: "Opportunities"},
+				"accounts": {label: "Accounts"},
+				"contacts": {label: "Contacts"},
+				"policies": {label: "Policies"},
+				"risks": {label: "Risks"},
+				"claims": {label: "Claims"},
+				"insurers": {label: "Insurers"},
+				"payments": {label: "Payments"},
+			},
+			order: [
+				"overview",
+				"opportunities",
+				"accounts",
+				"contacts",
+				"policies",
+				"risks",
+				"claims",
+				"insurers",
+				"payments",
+			],
+			unspecified: "overview",
+		},
+		secondary: {
+			list: {
+				weekly: {label:"Weekly"},
+				monthly: {label:"Monthly"},
+				quarterly: {label:"Quarterly"},
+				yearly: {label:"Yearly"},
+			},
+			order: [
+				"weekly",
+				"monthly",
+				"quarterly",
+				"yearly",
+			],
+			unspecified: "weekly",
+		},
+	};
+
+	// Populate navigation objects.
+	angular.forEach(navigation, function(tier) {
+		tier.index = {order:[]};
+		tier.current = {};
+
+		angular.forEach(tier.order, function(name) {
+			tier.list[name].name = name;
+			tier.index.order.push(tier.list[name]);
+		});
+	});
+
+	// Primary navigation operations.
+	angular.forEach(navigation.primary.list, function(item) {
+		item.templateUrl = 'module/dashboard/partial/module-reports.html';
+	});
+
+	navigation.setCurrent = function(tier, name) {
+		var navTier = navigation[tier];
+		if (name) {
+			navTier.current = navTier.list[name];
+		} else {
+			navTier.current = navTier.list[navTier.unspecified];
+		}
+	};
+
+	return navigation;
+}).factory('dataSummary', function ($rootScope, $http) {
 	// Ultimately a url will be generated relevant to the resource location, for now we're using fake data all from one source.
 	var url = "module/dashboard/summary-mockery.json";
 	var getURL = function() {return url;}
@@ -56,24 +137,14 @@ var app = angular.module('app',[
 				$.each(summary.data.accounts.quantity.type, function(category, account) {
 					var accountType = category;
 					account.max = account.total/summary.data.accounts.quantity.max.type;
-					/*account.producerType = {
-						broker: {value: Math.random()},
-						agent: {value: Math.random()},
-						staff: {value: Math.random()},
-					};*/
 					$.each(account.producerType, function(producerType, obj) {
 						obj.value = obj.total/account.total;
 						obj.colour = obj.value>0.5?'#27d':'#fd2';
-						//obj.value.
-
-						//if (!summary.data.accounts.quantity.producerType[producerType]) {summary.data.accounts.quantity.producerType[producerType] = {total:0}}
-						//summary.data.accounts.quantity.producerType[producerType].total+=obj.value;
 					});
 
 					summary.charts.accounts.quantity.pie.push({category: category, value: account.total});
 				});
 
-				//summary.data.accounts.quantity.producerType.total = {value:0};
 				summary.loaded = true;
 
 				$rootScope.$broadcast("accountsFetched", summary);
@@ -250,9 +321,6 @@ var app = angular.module('app',[
 	};
 
 	return ret;
-}).controller('dashboardController', function($scope, dataSummary) {
-	$scope.accountQuantities = dataSummary.data.accounts.quantity;
-	$scope.dataSummary = dataSummary;
 }).directive('yoaChart', function() {
 	return {
 		restrict: 'ACE',
@@ -267,33 +335,10 @@ var app = angular.module('app',[
 				$scope.$on("accountsFetched", function(event, data){
 					// The only way to make this work was to ensure the chart name had been updated before the appropriate chart was appended.
 					// This behaviour would best be a staple function for all chart displaying directives.
-					//chartOptions.appendChart($element, $attrs.chartName);
 					appendChart();
 				});
 			});
 		},
-	};	
-}).directive('yoaChartPie', function() {
-	return {
-		restrict: 'ACE',
-		transclude: true,
-		controller: function($scope, $element, dataSummary, $attrs, chartOptions) {
-			if (dataSummary.loaded) {
-				chartOptions.appendChart($element, "accountsByType");
-			}
-			$scope.$on("accountsFetched", function(event, data){
-				// Ultimately all data will come from a service which will need to fire an event when complete.
-				chartOptions.appendChart($element, "accountsByType");
-			});
-		},
-	};
-}).directive('yoaChartBar', function() {
-	return {
-		restrict: 'ACE',
-		transclude: true,
-		controller: function($scope, $element, dataSummary, $attrs, chartOptions) {
-			chartOptions.appendChart($element, "accountsByExecutive");
-		}
 	};
 }).directive('yoaChartPanel', function() {
 	return {
@@ -311,7 +356,7 @@ var app = angular.module('app',[
 }).directive('yoaDoublePanel', function() {
 	return {
 		restrict: 'ACE',
-		scope: true,
+		scope: {title:'@'},
 		transclude: true,
 		templateUrl: 'module/dashboard/partial/panel-double.html',
 		controller: function($scope, $attrs) {
@@ -324,7 +369,7 @@ var app = angular.module('app',[
 }).directive('yoaSinglePanel', function() {
 	return {
 		restrict: 'ACE',
-		scope: {bottom:'@', chartName:'@'},
+		scope: {bottom:'@', chartName:'@', title:'@'},
 		transclude: true,
 		templateUrl: 'module/dashboard/partial/panel-single.html',
 		controller: function($scope, $attrs) {
