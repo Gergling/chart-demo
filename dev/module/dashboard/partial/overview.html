@@ -6,14 +6,14 @@
 		<script type="text/javascript">
 			$(function(){ //DOM Ready
 
-				$(".gridster ul").gridster({
-					widget_margins: [10, 10],
-					widget_base_dimensions: [207, 206]
-				});
+				//$(".gridster ul").gridster({
+					//widget_margins: [10, 10],
+					//widget_base_dimensions: [207, 206]
+				//});
 			});
 		</script>
 		<div class="gridster">
-			<ul>
+			<ul data-yoa-gridster>
 				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
 					<div data-yoa-double-panel=""
 						data-title="# Opportunities" 
@@ -22,7 +22,11 @@
 						data-bottom="+14"
 					></div>
 				</li>
-				<li data-row="1" data-col="2" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+				<li data-row="1" data-col="2" data-sizex="2" data-sizey="2" class="border background-white">
+					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="opportunities"></div>
+				</li>
+
+				<li data-row="3" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
 					<div data-yoa-double-panel=""
 						data-title="# Accounts" 
 						data-symbol-class="symbol arrow-down-red" 
@@ -30,7 +34,11 @@
 						data-bottom="-1"
 					></div>
 				</li>
-				<li data-row="1" data-col="3" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+				<li data-row="3" data-col="2" data-sizex="2" data-sizey="2" class="border background-white">
+					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="accounts"></div>
+				</li>
+
+				<li data-row="5" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
 					<div data-yoa-double-panel=""
 						data-title="# Contacts" 
 						data-symbol-class="symbol arrow-up-green" 
@@ -38,8 +46,11 @@
 						data-bottom="+21"
 					></div>
 				</li>
+				<li data-row="5" data-col="2" data-sizex="2" data-sizey="2" class="border background-white">
+					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="contacts"></div>
+				</li>
 
-				<li data-row="2" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+				<li data-row="7" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
 					<div data-yoa-double-panel=""
 						data-title="# Policies" 
 						data-symbol-class="symbol arrow-down-red" 
@@ -47,7 +58,11 @@
 						data-bottom="-7"
 					></div>
 				</li>
-				<li data-row="2" data-col="2" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+				<li data-row="7" data-col="2" data-sizex="2" data-sizey="2" class="border background-white">
+					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="policies"></div>
+				</li>
+
+				<li data-row="9" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
 					<div data-yoa-double-panel=""
 						data-title="# Risks" 
 						data-symbol-class="symbol arrow-up-green" 
@@ -55,7 +70,11 @@
 						data-bottom="+2"
 					></div>
 				</li>
-				<li data-row="2" data-col="3" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+				<li data-row="9" data-col="2" data-sizex="2" data-sizey="2" class="border background-white">
+					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="risks"></div>
+				</li>
+
+				<li data-row="11" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
 					<div data-yoa-double-panel=""
 						data-title="# Claims" 
 						data-symbol-class="symbol arrow-down-red" 
@@ -63,8 +82,11 @@
 						data-bottom="-19"
 					></div>
 				</li>
+				<li data-row="11" data-col="2" data-sizex="2" data-sizey="2" class="border background-white">
+					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="claims"></div>
+				</li>
 
-				<li data-row="1" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+				<li data-row="13" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
 					<div data-yoa-double-panel=""
 						data-title="# Insurers" 
 						data-symbol-class="symbol arrow-up-green" 
@@ -72,6 +94,10 @@
 						data-bottom="+32"
 					></div>
 				</li>
+				<li data-row="13" data-col="2" data-sizex="2" data-sizey="2" class="border background-white">
+					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="insurers"></div>
+				</li>
+
 			</ul>
 		</div>
 	</div>

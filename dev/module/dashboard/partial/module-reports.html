@@ -5,16 +5,17 @@
     <h2>{{nav.primary.current.label}} {{nav.secondary.current.label}} Dashboard</h2>
 	<div class="span12">
 		<script type="text/javascript">
+			//console.log("Modular reports partial is loading.");
 			$(function(){ //DOM Ready
-				console.log(2);
-				$(".gridster ul").gridster({
-					widget_margins: [10, 10],
-					widget_base_dimensions: [207, 206]
-				});
+				//$(".gridster ul").gridster({
+					//widget_margins: [10, 10],
+					//widget_base_dimensions: [207, 206]
+				//});
+				//console.log("Gridster setup completed.");
 			});
 		</script>
 		<div class="gridster">
-			<ul>
+			<ul data-yoa-gridster>
 				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
 					<div data-yoa-double-panel=""
 						data-title="Account Growth" 

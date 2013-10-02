@@ -90,6 +90,9 @@ var app = angular.module('app',[
 			navTier.current = navTier.list[navTier.unspecified];
 		}
 	};
+	navigation.get = function(tier, name) {
+		return navigation[tier].list[name];
+	};
 
 	return navigation;
 }).factory('dataSummary', function ($rootScope, $http, navigation) {
@@ -171,7 +174,7 @@ var app = angular.module('app',[
 	summary.fetchAccountSummaries();
 
 	return summary;
-}).factory('chartOptions', function ($rootScope, $http, dataSummary) {
+}).factory('chartOptions', function ($rootScope, $http, dataSummary, navigation) {
 	var ret = {
 		list: {
 			accountsByType: {
@@ -251,14 +254,23 @@ var app = angular.module('app',[
 			},
 			newRecordsByTimeFrame: {
 				getOptions: function() {
-					var title = dataSummary.meta.getModule().label;
+					var moduleName = ret.getModule() || dataSummary.meta.getModule().name;
+					var title = navigation.get("primary", moduleName).label;
+					//var title = dataSummary.meta.getModule().label;
 					var timeFrame = dataSummary.meta.getTimeFrame().label;
 					// Generate different serieses.
 					return {
-						rotated: true,
+						//rotated: true,
 						commonSeriesSettings: {
 							argumentField: "name",
-							type: "stackedBar"
+							type: "bar",
+							hoverMode: "allArgumentPoints",
+							selectionMode: "allArgumentPoints",
+							label: {
+								visible: true,
+								format: "fixedPoint",
+								precision: 0
+							}
 						},
 						series: [
 							{ valueField: "corporate", name: "Corporate"},
@@ -270,21 +282,26 @@ var app = angular.module('app',[
 							horizontalAlignment: "center",
 							verticalAlignment: "bottom",
 						},
-						valueAxis: {title: {text: "Quantity"}},
+						//valueAxis: {title: {text: "Quantity"}},
 						title: "# "+title+" "+timeFrame,
-						tooltip: {enabled: true}
+						tooltip: {enabled: true},
+						pointClick: function (point) {
+							this.select();
+						},
 					};
 				},
 				getDataSource: function() {
 					var ds = [];
-					var module = dataSummary.meta.getModule().name;
+					console.log(ret.getModule());
+					var module = ret.getModule() || dataSummary.meta.getModule().name;
 					var timeFrame = dataSummary.meta.getTimeFrame().name;
 					var timeFrameMapping = {
-						weekly: "Week",
-						monthly: "Month",
-						quarterly: "Quarter",
-						yearly: "Year",
+						weekly: {label: "Week", max: 4},
+						monthly: {label: "Month", max: 3},
+						quarterly: {label: "Quarter", max: 4},
+						yearly: {label: "Year", max: 2},
 					};
+					var totalClusters = timeFrameMapping[timeFrame].max;
 					if (timeFrame=="weekly") {
 						var pad = function(string, number) {
 							// Pads string out to number of digits with 0s.
@@ -293,7 +310,7 @@ var app = angular.module('app',[
 						var now = new Date();
 						var monday = new Date(now);
 						monday.setDate(monday.getDate() - monday.getDay() + 1);
-						for(var i=1;i<13;i++) {
+						for(var i=1;i<totalClusters+1;i++) {
 							monday.setDate(monday.getDate() - 7);
 							var day = pad(monday.getDate()+"", 2);
 							var month = pad((monday.getMonth()+1)+"", 2);
@@ -302,8 +319,8 @@ var app = angular.module('app',[
 							ds.push({ name: axisValue });
 						}
 					} else {
-						for(var i=12;i>0;i--) {
-							ds.push({ name: timeFrameMapping[timeFrame]+" "+i });
+						for(var i=1;i<totalClusters+1;i++) {
+							ds.push({ name: timeFrameMapping[timeFrame].label+" "+i });
 						}
 					}
 					
@@ -400,8 +417,11 @@ var app = angular.module('app',[
 				fnc: "dxPieChart",
 			},
 		},
+		module: "overview",
+		setModule: function(module) {ret.module = module;},
+		getModule: function() {return ret.module;},
 		getDatasource: function(chartName) {
-			return ret.list[chartName].getDataSource(chartName);
+			return ret.list[chartName].getDataSource();
 		},
 		getOptions: function(chartName) {
 			var dataSource = ret.getDatasource(chartName);
@@ -421,6 +441,9 @@ var app = angular.module('app',[
 			var fnc = config.fnc;
 			var options = ret.getOptions(chartName);
 			element[fnc](options);
+			// The timeout does fix the situation, but is not ideal.
+			// Try console logging the element to find out the actual size at the time of this operation.
+			setTimeout(function() {element[fnc]('instance')._render({force:true});}, 500);
 		},
 	};
 
@@ -429,12 +452,14 @@ var app = angular.module('app',[
 	return {
 		restrict: 'ACE',
 		transclude: true,
-		scope: {chartName:"@"},
+		scope: {chartName:"@", module:"@"},
 		controller: function($scope, $element, dataSummary, $attrs, chartOptions) {
 			$scope.$watch("$attrs.chartName", function () {
 				var appendChart = function() {
 					chartOptions.appendChart($element, $attrs.chartName);
+					console.log("Appended chart", $attrs.chartName);
 				};
+				chartOptions.setModule($attrs.chartModule);
 				if (dataSummary.loaded) {appendChart();}
 				$scope.$on("accountsFetched", function(event, data){
 					// The only way to make this work was to ensure the chart name had been updated before the appropriate chart was appended.
@@ -483,6 +508,15 @@ var app = angular.module('app',[
 			$scope.chartName = $attrs.chartName;
 		},
 	}
+}).directive('yoaGridster', function() {
+	return {
+		restrict: 'ACE',
+		controller: function($scope, $attrs, $element) {
+			$element.gridster({
+				widget_margins: [10, 10],
+				widget_base_dimensions: [207, 206]
+			});
+			console.log("Gridster Directive has Run");
+		},
+	}
 });
-
-// Panel types should have directives
