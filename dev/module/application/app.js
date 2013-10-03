@@ -153,6 +153,17 @@ var app = angular.module('app',[
 				});
 
 				summary.loaded = true;
+				
+				// Fake the data!
+				summary.series = [
+					{ valueField: "corporate", name: "Corporate"},
+					{ valueField: "individual", name: "Individual"},
+					{ valueField: "reinsurance", name: "Reinsurance"},
+					{ valueField: "scheme", name: "Scheme"},
+				];
+				$.each(navigation.primary.list, function(moduleName, module) {
+					//summary.charts[moduleName].datasource
+				});
 
 				$rootScope.$broadcast("accountsFetched", summary);
 			});
@@ -292,7 +303,6 @@ var app = angular.module('app',[
 				},
 				getDataSource: function() {
 					var ds = [];
-					console.log(ret.getModule());
 					var module = ret.getModule() || dataSummary.meta.getModule().name;
 					var timeFrame = dataSummary.meta.getTimeFrame().name;
 					var timeFrameMapping = {
@@ -340,6 +350,142 @@ var app = angular.module('app',[
 					angular.forEach(ds, function(ex) {
 						var total = 0;
 						angular.forEach(ret.list.newRecordsByTimeFrame.getOptions().series, function(accountType) {
+							var value = Math.floor(Math.random()*multiplier);
+							ex[accountType.valueField] = value;
+							total += value;
+						});
+						ex.total = total;
+					});
+					return ds;
+				},
+				fnc: "dxChart",
+			},
+			numberRecords: {
+				getXAxis: function() {
+					var axis = {
+						timeFrame: function() {
+							var timeFrame = dataSummary.meta.getTimeFrame().name;
+							var timeFrameMapping = {
+								weekly: {label: "Week", max: 4},
+								monthly: {label: "Month", max: 3},
+								quarterly: {label: "Quarter", max: 4},
+								yearly: {label: "Year", max: 2},
+							};
+							var totalClusters = timeFrameMapping[timeFrame].max;
+							if (timeFrame=="weekly") {
+								var pad = function(string, number) {
+									// Pads string out to number of digits with 0s.
+									return (new Array((number+1)-string.length).join('0'))+string;
+								};
+								var now = new Date();
+								var monday = new Date(now);
+								monday.setDate(monday.getDate() - monday.getDay() + 1);
+								for(var i=1;i<totalClusters+1;i++) {
+									monday.setDate(monday.getDate() - 7);
+									var day = pad(monday.getDate()+"", 2);
+									var month = pad((monday.getMonth()+1)+"", 2);
+									var year = monday.getFullYear();
+									var axisValue = day+"/"+month+"/"+year;
+									ds.push({ name: axisValue });
+								}
+							} else {
+								for(var i=1;i<totalClusters+1;i++) {
+									ds.push({ name: timeFrameMapping[timeFrame].label+" "+i });
+								}
+							}
+						},
+					};
+					return axies[ret.getAxis()];
+				},
+				getOptions: function() {
+					var _this = ret.list.numberRecords;
+					var moduleName = ret.getModule() || dataSummary.meta.getModule().name;
+					var title = navigation.get("primary", moduleName).label;
+					//var title = dataSummary.meta.getModule().label;
+					var timeFrame = dataSummary.meta.getTimeFrame().label;
+					// Generate different serieses.
+					//var axisName = ret.getAxis();
+					return {
+						//rotated: true,
+						commonSeriesSettings: {
+							argumentField: "name",
+							type: "bar",
+							hoverMode: "allArgumentPoints",
+							selectionMode: "allArgumentPoints",
+							label: {
+								visible: true,
+								format: "fixedPoint",
+								precision: 0
+							}
+						},
+						series: [
+							{ valueField: "corporate", name: "Corporate"},
+							{ valueField: "individual", name: "Individual"},
+							{ valueField: "reinsurance", name: "Reinsurance"},
+							{ valueField: "scheme", name: "Scheme"},
+						],
+						legend: {
+							horizontalAlignment: "center",
+							verticalAlignment: "bottom",
+						},
+						//valueAxis: {title: {text: "Quantity"}},
+						title: "# "+title+" "+timeFrame,
+						tooltip: {enabled: true},
+						pointClick: function (point) {
+							this.select();
+						},
+					};
+				},
+				getDataSource: function() {
+					var _this = ret.list.numberRecords;
+					var ds = [];
+					var module = ret.getModule() || dataSummary.meta.getModule().name;
+					var timeFrame = dataSummary.meta.getTimeFrame().name;
+					var timeFrameMapping = {
+						weekly: {label: "Week", max: 4},
+						monthly: {label: "Month", max: 3},
+						quarterly: {label: "Quarter", max: 4},
+						yearly: {label: "Year", max: 2},
+					};
+					var totalClusters = timeFrameMapping[timeFrame].max;
+					if (timeFrame=="weekly") {
+						var pad = function(string, number) {
+							// Pads string out to number of digits with 0s.
+							return (new Array((number+1)-string.length).join('0'))+string;
+						};
+						var now = new Date();
+						var monday = new Date(now);
+						monday.setDate(monday.getDate() - monday.getDay() + 1);
+						for(var i=1;i<totalClusters+1;i++) {
+							monday.setDate(monday.getDate() - 7);
+							var day = pad(monday.getDate()+"", 2);
+							var month = pad((monday.getMonth()+1)+"", 2);
+							var year = monday.getFullYear();
+							var axisValue = day+"/"+month+"/"+year;
+							ds.push({ name: axisValue });
+						}
+					} else {
+						for(var i=1;i<totalClusters+1;i++) {
+							ds.push({ name: timeFrameMapping[timeFrame].label+" "+i });
+						}
+					}
+					
+					// Fake data generator
+					var multiplier = 1;
+					var moduleMultiplier = {
+						accounts: 2,
+					};
+					multiplier *= (moduleMultiplier[module] || 10);
+					var timeFrameMultiplier = {
+						weekly: 1,
+						monthly: 4,
+						quarterly: 12,
+						yearly: 48,
+					};
+					multiplier *= timeFrameMultiplier[timeFrame];
+					angular.forEach(ds, function(ex) {
+						var total = 0;
+						angular.forEach(_this.getOptions().series, function(accountType) {
 							var value = Math.floor(Math.random()*multiplier);
 							ex[accountType.valueField] = value;
 							total += value;
@@ -420,6 +566,9 @@ var app = angular.module('app',[
 		module: "overview",
 		setModule: function(module) {ret.module = module;},
 		getModule: function() {return ret.module;},
+		axis: "timeFrame",
+		setAxis: function(axis) {ret.axis = axis;},
+		getAxis: function() {return ret.axis;},
 		getDatasource: function(chartName) {
 			return ret.list[chartName].getDataSource();
 		},
@@ -440,6 +589,9 @@ var app = angular.module('app',[
 			var config = ret.getConfig(chartName);
 			var fnc = config.fnc;
 			var options = ret.getOptions(chartName);
+
+			// This settimeout is here to work around an issue where the style seems to be rendered after the chart, making the chart very large.
+			// Ideally this would be called in an event after the chart is rendered, or a resize would be prompted to correct the charts.
 			setTimeout(function() {element[fnc](options);}, 65);
 			// The timeout does fix the situation, but is not ideal.
 			// Try console logging the element to find out the actual size at the time of this operation.
@@ -460,6 +612,7 @@ var app = angular.module('app',[
 					console.log("Appended chart", $attrs.chartName);
 				};
 				chartOptions.setModule($attrs.chartModule);
+				chartOptions.setAxis($attrs.chartAxis);
 				if (dataSummary.loaded) {appendChart();}
 				$scope.$on("accountsFetched", function(event, data){
 					// The only way to make this work was to ensure the chart name had been updated before the appropriate chart was appended.
@@ -511,18 +664,6 @@ var app = angular.module('app',[
 }).directive('yoaGridster', function() {
 	return {
 		restrict: 'ACE',
-		controller: function($scope, $attrs, $element) {
-			$element.gridster({
-				widget_margins: [10, 10],
-				widget_base_dimensions: [207, 206]
-			});
-			console.log("Gridster Directive has Run");
-		},
-	}
-}).directive('yoaLoadCSS', function() {
-	return {
-		restrict: 'E',
-		scope: {},
 		controller: function($scope, $attrs, $element) {
 			$element.gridster({
 				widget_margins: [10, 10],
