@@ -364,12 +364,13 @@ var app = angular.module('app',[
 				getXAxis: function() {
 					var axis = {
 						timeFrame: function() {
+							var ds = [];
 							var timeFrame = dataSummary.meta.getTimeFrame().name;
 							var timeFrameMapping = {
-								weekly: {label: "Week", max: 4},
-								monthly: {label: "Month", max: 3},
-								quarterly: {label: "Quarter", max: 4},
-								yearly: {label: "Year", max: 2},
+								weekly: {label: "Week", max: 4, multiplier: 1},
+								monthly: {label: "Month", max: 3, multiplier: 4},
+								quarterly: {label: "Quarter", max: 4, multiplier: 12},
+								yearly: {label: "Year", max: 2, multiplier: 48},
 							};
 							var totalClusters = timeFrameMapping[timeFrame].max;
 							if (timeFrame=="weekly") {
@@ -393,9 +394,11 @@ var app = angular.module('app',[
 									ds.push({ name: timeFrameMapping[timeFrame].label+" "+i });
 								}
 							}
+							return ds;
 						},
 					};
-					return axies[ret.getAxis()];
+					console.log('sdvb', ret.getAxis());
+					return axis[ret.getAxis()]();
 				},
 				getOptions: function() {
 					var _this = ret.list.numberRecords;
@@ -438,7 +441,7 @@ var app = angular.module('app',[
 				},
 				getDataSource: function() {
 					var _this = ret.list.numberRecords;
-					var ds = [];
+					/*var ds = [];
 					var module = ret.getModule() || dataSummary.meta.getModule().name;
 					var timeFrame = dataSummary.meta.getTimeFrame().name;
 					var timeFrameMapping = {
@@ -468,7 +471,8 @@ var app = angular.module('app',[
 						for(var i=1;i<totalClusters+1;i++) {
 							ds.push({ name: timeFrameMapping[timeFrame].label+" "+i });
 						}
-					}
+					}*/
+					var ds = _this.getXAxis();
 					
 					// Fake data generator
 					var multiplier = 1;
@@ -476,13 +480,13 @@ var app = angular.module('app',[
 						accounts: 2,
 					};
 					multiplier *= (moduleMultiplier[module] || 10);
-					var timeFrameMultiplier = {
+					/*var timeFrameMultiplier = {
 						weekly: 1,
 						monthly: 4,
 						quarterly: 12,
 						yearly: 48,
-					};
-					multiplier *= timeFrameMultiplier[timeFrame];
+					};*/
+					//multiplier *= timeFrameMultiplier[timeFrame];
 					angular.forEach(ds, function(ex) {
 						var total = 0;
 						angular.forEach(_this.getOptions().series, function(accountType) {

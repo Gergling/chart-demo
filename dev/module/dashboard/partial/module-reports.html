@@ -2,139 +2,29 @@
 <link rel="stylesheet" href="module/dashboard/css/layout.css"/>
 
 <div class="row-fluid">
-    <h2>{{nav.primary.current.label}} {{nav.secondary.current.label}} Dashboard</h2>
+	<h2>{{nav.primary.current.label}} {{nav.secondary.current.label}} Dashboard</h2>
 	<div class="span12">
-		<script type="text/javascript">
-			//console.log("Modular reports partial is loading.");
-			$(function(){ //DOM Ready
-				//$(".gridster ul").gridster({
-					//widget_margins: [10, 10],
-					//widget_base_dimensions: [207, 206]
-				//});
-				//console.log("Gridster setup completed.");
-			});
-		</script>
 		<div class="gridster">
 			<ul data-yoa-gridster>
 				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
 					<div data-yoa-double-panel=""
-						data-title="Account Growth" 
+						data-title="# Claims" 
 						data-symbol-class="symbol arrow-down-red" 
-						data-right="10%" 
-						data-bottom="-14%"
+						data-right="405" 
+						data-bottom="-19"
 					></div>
 				</li>
-				<li data-row="1" data-col="2" data-sizex="1" data-sizey="1" class="panel-yellow-single">
-					<div data-yoa-single-panel 
-						data-title="Revenue" 
-						data-middle="&#8358;868,972" 
-						data-bottom="{{dataSummary}}"
-						data-chart-name="revenuePanel"
-					></div>
-				</li>
-				<li data-row="1" data-col="3" data-sizex="1" data-sizey="1" class="panel-blue-single">
-					<div data-yoa-single-panel 
-						data-title="Policies Sold" 
-						data-middle="1,692" 
-						data-bottom="{{dataSummary}}"
-						data-chart-name="policiesSold"
-					></div>
-				</li>
-				<li data-row="1" data-col="4" data-sizex="2" data-sizey="2" class="border background-white"><div data-yoa-chart data-chart-name="numberRecords" data-chart-series="accountType"></div></li>
-
-				<li data-row="2" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
-					<div data-yoa-double-panel 
-						data-title="Revenue Growth" 
-						data-symbol-class="symbol arrow-up-green" 
-						data-right="11%" 
-						data-bottom="23%"
-					></div>
-				</li>
-				<li data-row="2" data-col="2" data-sizex="2" data-sizey="1" class="border background-white" data-ng-include="'module/dashboard/partial/table-accounts-by-type-producer.html'"></li>
-				<li data-row="3" data-col="2" data-sizex="2" data-sizey="1" class="border background-white" data-ng-include="'module/dashboard/partial/table2.html'"></li>
-
-				<li data-row="3" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double">
-					<div data-yoa-double-panel 
-						data-title="Policies Sold Growth" 
+				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+					<div data-yoa-double-panel=""
+						data-title="# Claims" 
 						data-symbol-class="symbol arrow-down-red" 
-						data-right="11%" 
-						data-bottom="23%"
+						data-right="405" 
+						data-bottom="-19"
 					></div>
 				</li>
-
-				<li data-row="3" data-col="4" data-sizex="2" data-sizey="1" class="border background-white"><div data-yoa-chart data-chart-name="accountsByType" class="chart"></div></li>
-
-				<li data-row="4" data-col="1" data-sizex="3" data-sizey="2" class="border background-white">
-					<table class="table table-bordered">
-						<thead>
-							<tr>
-								<th>Account</th>
-								<th>Executive</th>
-								<th>Type</th>
-								<th># Opportunities</th>
-								<th># Active Policies</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Alpha Energy</td>
-								<td>Alfred</td>
-								<td>Corporate</td>
-								<td>12</td>
-								<td>5</td>
-							</tr>
-							<tr>
-								<td>Beta Petroleum</td>
-								<td>Bertram</td>
-								<td>Corporate</td>
-								<td>6</td>
-								<td>5</td>
-							</tr>
-							<tr>
-								<td>Cincinatti Foodstuffs</td>
-								<td>Charlotte</td>
-								<td>Corporate</td>
-								<td>5</td>
-								<td>87</td>
-							</tr>
-						</tbody>
-					</table>
+				<li data-row="1" data-col="2" data-sizex="4" data-sizey="2" class="border background-white">
+					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame"></div>
 				</li>
-
-				<li data-row="4" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double">
-					<div data-yoa-double-panel 
-						data-title="Sum Insured" 
-						data-symbol-class="symbol arrow-up-green" 
-						data-right="50%" 
-						data-bottom="39%"
-					></div>
-				</li>
-				<li data-row="4" data-col="5" data-sizex="1" data-sizey="1" class="panel-yellow-double-person">
-					<div data-yoa-double-panel 
-						data-title="Active Agents" 
-						data-symbol-class="" 
-						data-right="23%" 
-						data-bottom="49%"
-					></div>
-				</li>
-				<li data-row="5" data-col="4" data-sizex="1" data-sizey="1" class="panel-blue-double">
-					<div data-yoa-double-panel 
-						data-title="# of Accounts" 
-						data-symbol-class="symbol arrow-down-red" 
-						data-right="-15" 
-						data-bottom="519"
-					></div>
-				</li>
-				<li data-row="5" data-col="5" data-sizex="1" data-sizey="1" class="panel-blue-double">
-					<div data-yoa-double-panel 
-						data-title="Active Opportunities" 
-						data-symbol-class="symbol arrow-up-green" 
-						data-right="23%" 
-						data-bottom="35%"
-					></div>
-				</li>
-				<li data-row="6" data-col="1" data-sizex="2" data-sizey="1" class="border background-white"><div data-yoa-chart data-chart-name="accountsByAge" style=""></div></li>
-				<!--<li data-row="6" data-col="4" data-sizex="2" data-sizey="1" class="border background-white"><div data-yoa-chart data-chart-name="accountsByPolicyType" style=""></div></li>-->
 			</ul>
 		</div>
 	</div>
