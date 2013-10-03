@@ -440,10 +440,10 @@ var app = angular.module('app',[
 			var config = ret.getConfig(chartName);
 			var fnc = config.fnc;
 			var options = ret.getOptions(chartName);
-			element[fnc](options);
+			setTimeout(function() {element[fnc](options);}, 65);
 			// The timeout does fix the situation, but is not ideal.
 			// Try console logging the element to find out the actual size at the time of this operation.
-			setTimeout(function() {element[fnc]('instance')._render({force:true});}, 500);
+			//setTimeout(function() {console.log(element.width());element[fnc]('instance')._render({force:true});}, 500);
 		},
 	};
 
@@ -511,6 +511,18 @@ var app = angular.module('app',[
 }).directive('yoaGridster', function() {
 	return {
 		restrict: 'ACE',
+		controller: function($scope, $attrs, $element) {
+			$element.gridster({
+				widget_margins: [10, 10],
+				widget_base_dimensions: [207, 206]
+			});
+			console.log("Gridster Directive has Run");
+		},
+	}
+}).directive('yoaLoadCSS', function() {
+	return {
+		restrict: 'E',
+		scope: {},
 		controller: function($scope, $attrs, $element) {
 			$element.gridster({
 				widget_margins: [10, 10],
