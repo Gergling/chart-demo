@@ -14,3 +14,14 @@
 	float:left;
 	overflow:hidden;
 }
+
+.grid-layout .grid-group {position:relative;height:432px;margin-bottom:20px;}
+.grid-layout .panel {position:absolute;}
+.grid-layout .panel.left1 {left:10px;}
+.grid-layout .panel.left2 {left:237px;}
+.grid-layout .panel.top1 {top:10px;}
+.grid-layout .panel.top2 {top:236px;}
+.grid-layout .panel.width1 {width:207px;}
+.grid-layout .panel.height1 {height:206px;}
+.grid-layout .panel.height2 {height:432px;}
+.grid-layout .panel.width4 {width:888px;}

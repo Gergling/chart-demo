@@ -4,28 +4,28 @@
 <div class="row-fluid">
 	<h2>{{nav.primary.current.label}} {{nav.secondary.current.label}} Dashboard</h2>
 	<div class="span12">
-		<div class="gridster">
-			<ul data-yoa-gridster>
-				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+		<div class="grid-layout">
+			<div class="grid-group" data-ng-repeat="chartConfig in layout">
+				<div data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel width1 height1 left1 top1 panel-blue-double text-white">
 					<div data-yoa-double-panel=""
 						data-title="# {{nav.primary.current.label}}" 
 						data-symbol-class="symbol arrow-up-green" 
 						data-right="+4" 
 						data-bottom="105"
 					></div>
-				</li>
-				<li data-row="2" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+				</div>
+				<div data-row="2" data-col="1" data-sizex="1" data-sizey="1" class="panel width1 height1 left1 top2 panel-blue-double text-white">
 					<div data-yoa-double-panel=""
 						data-title="{{nav.primary.current.label}} Growth" 
 						data-symbol-class="symbol arrow-down-red" 
 						data-right="-1%" 
 						data-bottom="3%"
 					></div>
-				</li>
-				<li data-row="1" data-col="2" data-sizex="4" data-sizey="2" class="border background-white">
-					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame"></div>
-				</li>
-			</ul>
+				</div>
+				<div data-row="1" data-col="2" data-sizex="4" data-sizey="2" class="panel width4 height2 left2 top1 border background-white">
+					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-series="{{chartConfig.series}}" data-chart-metric="{{chartConfig.metric}}"></div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

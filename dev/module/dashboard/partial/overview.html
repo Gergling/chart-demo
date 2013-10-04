@@ -1,104 +1,35 @@
 <link rel="stylesheet" href="module/dashboard/css/style.css"/>
+<link rel="stylesheet" href="module/dashboard/css/layout.css"/>
 
 <div class="row-fluid">
-    <h2>Overview {{nav.secondary.current.label}} Dashboard</h2>
+	<h2>Overview {{nav.secondary.current.label}} Dashboard</h2>
 	<div class="span12">
-		<script type="text/javascript">
-			$(function(){ //DOM Ready
-
-				//$(".gridster ul").gridster({
-					//widget_margins: [10, 10],
-					//widget_base_dimensions: [207, 206]
-				//});
-			});
-		</script>
-		<div class="gridster">
-			<ul data-yoa-gridster>
-				<li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+		<div class="grid-layout">
+			<div class="grid-group" data-ng-repeat="module in moduleOrder">
+				<div data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="panel width1 height1 left1 top1 panel-blue-double text-white">
 					<div data-yoa-double-panel=""
-						data-title="# Opportunities" 
+						data-title="# {{nav.primary.current.label}}" 
 						data-symbol-class="symbol arrow-up-green" 
-						data-right="478" 
-						data-bottom="+14"
+						data-right="+4" 
+						data-bottom="105"
 					></div>
-				</li>
-				<li data-row="1" data-col="2" data-sizex="4" data-sizey="2" class="border background-white">
-					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="opportunities"></div>
-				</li>
-
-				<li data-row="3" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
+				</div>
+				<div data-row="2" data-col="1" data-sizex="1" data-sizey="1" class="panel width1 height1 left1 top2 panel-blue-double text-white">
 					<div data-yoa-double-panel=""
-						data-title="# Accounts" 
+						data-title="{{nav.primary.current.label}} Growth" 
 						data-symbol-class="symbol arrow-down-red" 
-						data-right="38" 
-						data-bottom="-1"
+						data-right="-1%" 
+						data-bottom="3%"
 					></div>
-				</li>
-				<li data-row="3" data-col="2" data-sizex="4" data-sizey="2" class="border background-white">
-					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="accounts"></div>
-				</li>
-
-				<li data-row="5" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
-					<div data-yoa-double-panel=""
-						data-title="# Contacts" 
-						data-symbol-class="symbol arrow-up-green" 
-						data-right="780" 
-						data-bottom="+21"
+				</div>
+				<div data-row="1" data-col="2" data-sizex="4" data-sizey="2" class="panel width4 height2 left2 top1 border background-white">
+					<div data-yoa-chart 
+						data-chart-name="newRecordsByTimeFrame" 
+						data-chart-module="{{module}}" 
+						data-chart-series="accountType"
 					></div>
-				</li>
-				<li data-row="5" data-col="2" data-sizex="4" data-sizey="2" class="border background-white">
-					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="contacts"></div>
-				</li>
-
-				<li data-row="7" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
-					<div data-yoa-double-panel=""
-						data-title="# Policies" 
-						data-symbol-class="symbol arrow-down-red" 
-						data-right="639" 
-						data-bottom="-7"
-					></div>
-				</li>
-				<li data-row="7" data-col="2" data-sizex="4" data-sizey="2" class="border background-white">
-					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="policies"></div>
-				</li>
-
-				<li data-row="9" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
-					<div data-yoa-double-panel=""
-						data-title="# Risks" 
-						data-symbol-class="symbol arrow-up-green" 
-						data-right="712" 
-						data-bottom="+2"
-					></div>
-				</li>
-				<li data-row="9" data-col="2" data-sizex="4" data-sizey="2" class="border background-white">
-					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="risks"></div>
-				</li>
-
-				<li data-row="11" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
-					<div data-yoa-double-panel=""
-						data-title="# Claims" 
-						data-symbol-class="symbol arrow-down-red" 
-						data-right="405" 
-						data-bottom="-19"
-					></div>
-				</li>
-				<li data-row="11" data-col="2" data-sizex="4" data-sizey="2" class="border background-white">
-					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="claims"></div>
-				</li>
-
-				<li data-row="13" data-col="1" data-sizex="1" data-sizey="1" class="panel-blue-double text-white">
-					<div data-yoa-double-panel=""
-						data-title="# Insurers" 
-						data-symbol-class="symbol arrow-up-green" 
-						data-right="512" 
-						data-bottom="+32"
-					></div>
-				</li>
-				<li data-row="13" data-col="2" data-sizex="4" data-sizey="2" class="border background-white">
-					<div data-yoa-chart data-chart-name="newRecordsByTimeFrame" data-chart-module="insurers"></div>
-				</li>
-
-			</ul>
+				</div>
+			</div>			
 		</div>
 	</div>
 </div>

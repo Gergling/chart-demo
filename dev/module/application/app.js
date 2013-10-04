@@ -7,7 +7,7 @@ var app = angular.module('app',[
 	$routeProvider.when('/:module', {templateUrl: templateUrl});
 	$routeProvider.when('/:module/:timeFrame', {templateUrl: templateUrl});
 	$routeProvider.otherwise({templateUrl: 'module/application/partial/404.html'});
-}]).controller('dashboardController', function($scope, dataSummary, navigation) {
+}]).controller('dashboardController', function($scope, dataSummary, navigation, layoutService) {
 	$scope.accountQuantities = dataSummary.data.accounts.quantity;
 	$scope.dataSummary = dataSummary;
 
@@ -18,6 +18,19 @@ var app = angular.module('app',[
 		navigation.setCurrent("secondary", current.params.timeFrame);
 		
 		dataSummary.meta.setNavigation();
+	});
+
+	// Ideally need to separate out the controller mechanisms here:
+
+	// For overview page:
+	$scope.moduleOrder = navigation.primary.order;
+
+	// For modular pages:
+	$scope.layout = [];
+	$scope.$on("navigationUpdated", function(event, data) {
+		if (data.tier=="primary") {
+			$scope.layout = layoutService.getCurrentModuleLayout();
+		}
 	});
 }).factory('navigation', function ($rootScope) {
 	var navigation = {
@@ -89,6 +102,7 @@ var app = angular.module('app',[
 		} else {
 			navTier.current = navTier.list[navTier.unspecified];
 		}
+		$rootScope.$broadcast("navigationUpdated", {tier: tier, currentObject: navTier.current});
 	};
 	navigation.get = function(tier, name) {
 		return navigation[tier].list[name];
@@ -264,12 +278,113 @@ var app = angular.module('app',[
 				fnc: "dxChart",
 			},
 			newRecordsByTimeFrame: {
+				getMetric: function(name) {
+					var metric = {
+						number: {label: "#",},
+						value: {label: "Value (&#8358;)",},
+					};
+					return metric[name];
+				},
+				getSeries: function(name) {
+					var series = {
+						accountType: {
+							label: "Account Type",
+							list: [
+								{ valueField: "corporate", name: "Corporate"},
+								{ valueField: "individual", name: "Individual"},
+								{ valueField: "reinsurance", name: "Reinsurance"},
+								{ valueField: "scheme", name: "Scheme"},
+							],
+						},
+						accountProducer: {
+							label: "Account Producer",
+							list: [
+								{ valueField: "broker", name: "Broker"},
+								{ valueField: "agent", name: "Agent"},
+								{ valueField: "staff", name: "Staff"},
+							],
+						},
+						accountExecutive: {
+							label: "Account Executive",
+							list: [
+								{ valueField: "1", name: "Alfred"},
+								{ valueField: "2", name: "Betty"},
+								{ valueField: "3", name: "Gary"},
+							],
+						},
+						recordAge: {
+							label: "Age",
+							list: [
+								{ valueField: "<1", name: "< 1"},
+								{ valueField: "1-3", name: "1 to 3"},
+								{ valueField: "3-5", name: "3 to 5"},
+								{ valueField: ">5", name: "> 5"},
+							],
+						},
+						riskType: {
+							label: "Risk Type",
+							list: [
+								{ valueField: "energy", name: "Energy"},
+								{ valueField: "motor", name: "Motor"},
+								{ valueField: "life", name: "Life"},
+								{ valueField: "home", name: "Home"},
+							],
+						},
+						policyType: {
+							label: "Policy Type",
+							list: [
+								{ valueField: "standard", name: "Standard"},
+								{ valueField: "declaration", name: "Declaration"},
+								{ valueField: "package", name: "Package"},
+							],
+						},
+						insurer: {
+							label: "Insurer",
+							list: [
+								{ valueField: "1", name: "Insurer 1"},
+								{ valueField: "2", name: "Insurer 2"},
+								{ valueField: "3", name: "Insurer 3"},
+							],
+						},
+						sumInsuredPerLimit: {
+							label: "Sum Insured Per Limit",
+							list: [
+								{ valueField: "<5m", name: "< 5m"},
+								{ valueField: "5-15m", name: "5m to 15m"},
+								{ valueField: "15-50m", name: "15m to 50m"},
+								{ valueField: ">50m", name: "> 50m"},
+							],
+						},
+						premium: {
+							label: "Premium",
+							list: [
+								{ valueField: "<0.5m", name: "< 0.5m"},
+								{ valueField: "0.5-2.5m", name: "0.5m to 2.5m"},
+								{ valueField: "2.5-5m", name: "2.5m to 5m"},
+								{ valueField: ">5m", name: "> 5m"},
+							],
+						},
+						brokerage: {
+							label: "Brokerage",
+							list: [
+								{ valueField: "<0.5m", name: "< 0.5m"},
+								{ valueField: "0.5-2.5m", name: "0.5m to 2.5m"},
+								{ valueField: "2.5-5m", name: "2.5m to 5m"},
+								{ valueField: ">5m", name: "> 5m"},
+							],
+						},
+					};
+					return series[name] || {label: "("+name+")", list: []};
+				},
 				getOptions: function() {
+					var _this = ret.list.newRecordsByTimeFrame;
 					var moduleName = ret.getModule() || dataSummary.meta.getModule().name;
 					var title = navigation.get("primary", moduleName).label;
 					//var title = dataSummary.meta.getModule().label;
 					var timeFrame = dataSummary.meta.getTimeFrame().label;
 					// Generate different serieses.
+					var series = _this.getSeries(ret.getSeries());
+					var metric = _this.getMetric(ret.getMetric());
 					return {
 						//rotated: true,
 						commonSeriesSettings: {
@@ -283,18 +398,13 @@ var app = angular.module('app',[
 								precision: 0
 							}
 						},
-						series: [
-							{ valueField: "corporate", name: "Corporate"},
-							{ valueField: "individual", name: "Individual"},
-							{ valueField: "reinsurance", name: "Reinsurance"},
-							{ valueField: "scheme", name: "Scheme"},
-						],
+						series: series.list,
 						legend: {
 							horizontalAlignment: "center",
 							verticalAlignment: "bottom",
 						},
 						//valueAxis: {title: {text: "Quantity"}},
-						title: "# "+title+" "+timeFrame,
+						title: metric.label+" "+title+" by "+series.label,
 						tooltip: {enabled: true},
 						pointClick: function (point) {
 							this.select();
@@ -302,6 +412,7 @@ var app = angular.module('app',[
 					};
 				},
 				getDataSource: function() {
+					var _this = ret.list.newRecordsByTimeFrame;
 					var ds = [];
 					var module = ret.getModule() || dataSummary.meta.getModule().name;
 					var timeFrame = dataSummary.meta.getTimeFrame().name;
@@ -347,146 +458,6 @@ var app = angular.module('app',[
 						yearly: 48,
 					};
 					multiplier *= timeFrameMultiplier[timeFrame];
-					angular.forEach(ds, function(ex) {
-						var total = 0;
-						angular.forEach(ret.list.newRecordsByTimeFrame.getOptions().series, function(accountType) {
-							var value = Math.floor(Math.random()*multiplier);
-							ex[accountType.valueField] = value;
-							total += value;
-						});
-						ex.total = total;
-					});
-					return ds;
-				},
-				fnc: "dxChart",
-			},
-			numberRecords: {
-				getXAxis: function() {
-					var axis = {
-						timeFrame: function() {
-							var ds = [];
-							var timeFrame = dataSummary.meta.getTimeFrame().name;
-							var timeFrameMapping = {
-								weekly: {label: "Week", max: 4, multiplier: 1},
-								monthly: {label: "Month", max: 3, multiplier: 4},
-								quarterly: {label: "Quarter", max: 4, multiplier: 12},
-								yearly: {label: "Year", max: 2, multiplier: 48},
-							};
-							var totalClusters = timeFrameMapping[timeFrame].max;
-							if (timeFrame=="weekly") {
-								var pad = function(string, number) {
-									// Pads string out to number of digits with 0s.
-									return (new Array((number+1)-string.length).join('0'))+string;
-								};
-								var now = new Date();
-								var monday = new Date(now);
-								monday.setDate(monday.getDate() - monday.getDay() + 1);
-								for(var i=1;i<totalClusters+1;i++) {
-									monday.setDate(monday.getDate() - 7);
-									var day = pad(monday.getDate()+"", 2);
-									var month = pad((monday.getMonth()+1)+"", 2);
-									var year = monday.getFullYear();
-									var axisValue = day+"/"+month+"/"+year;
-									ds.push({ name: axisValue });
-								}
-							} else {
-								for(var i=1;i<totalClusters+1;i++) {
-									ds.push({ name: timeFrameMapping[timeFrame].label+" "+i });
-								}
-							}
-							return ds;
-						},
-					};
-					console.log('sdvb', ret.getAxis());
-					return axis[ret.getAxis()]();
-				},
-				getOptions: function() {
-					var _this = ret.list.numberRecords;
-					var moduleName = ret.getModule() || dataSummary.meta.getModule().name;
-					var title = navigation.get("primary", moduleName).label;
-					//var title = dataSummary.meta.getModule().label;
-					var timeFrame = dataSummary.meta.getTimeFrame().label;
-					// Generate different serieses.
-					//var axisName = ret.getAxis();
-					return {
-						//rotated: true,
-						commonSeriesSettings: {
-							argumentField: "name",
-							type: "bar",
-							hoverMode: "allArgumentPoints",
-							selectionMode: "allArgumentPoints",
-							label: {
-								visible: true,
-								format: "fixedPoint",
-								precision: 0
-							}
-						},
-						series: [
-							{ valueField: "corporate", name: "Corporate"},
-							{ valueField: "individual", name: "Individual"},
-							{ valueField: "reinsurance", name: "Reinsurance"},
-							{ valueField: "scheme", name: "Scheme"},
-						],
-						legend: {
-							horizontalAlignment: "center",
-							verticalAlignment: "bottom",
-						},
-						//valueAxis: {title: {text: "Quantity"}},
-						title: "# "+title+" "+timeFrame,
-						tooltip: {enabled: true},
-						pointClick: function (point) {
-							this.select();
-						},
-					};
-				},
-				getDataSource: function() {
-					var _this = ret.list.numberRecords;
-					/*var ds = [];
-					var module = ret.getModule() || dataSummary.meta.getModule().name;
-					var timeFrame = dataSummary.meta.getTimeFrame().name;
-					var timeFrameMapping = {
-						weekly: {label: "Week", max: 4},
-						monthly: {label: "Month", max: 3},
-						quarterly: {label: "Quarter", max: 4},
-						yearly: {label: "Year", max: 2},
-					};
-					var totalClusters = timeFrameMapping[timeFrame].max;
-					if (timeFrame=="weekly") {
-						var pad = function(string, number) {
-							// Pads string out to number of digits with 0s.
-							return (new Array((number+1)-string.length).join('0'))+string;
-						};
-						var now = new Date();
-						var monday = new Date(now);
-						monday.setDate(monday.getDate() - monday.getDay() + 1);
-						for(var i=1;i<totalClusters+1;i++) {
-							monday.setDate(monday.getDate() - 7);
-							var day = pad(monday.getDate()+"", 2);
-							var month = pad((monday.getMonth()+1)+"", 2);
-							var year = monday.getFullYear();
-							var axisValue = day+"/"+month+"/"+year;
-							ds.push({ name: axisValue });
-						}
-					} else {
-						for(var i=1;i<totalClusters+1;i++) {
-							ds.push({ name: timeFrameMapping[timeFrame].label+" "+i });
-						}
-					}*/
-					var ds = _this.getXAxis();
-					
-					// Fake data generator
-					var multiplier = 1;
-					var moduleMultiplier = {
-						accounts: 2,
-					};
-					multiplier *= (moduleMultiplier[module] || 10);
-					/*var timeFrameMultiplier = {
-						weekly: 1,
-						monthly: 4,
-						quarterly: 12,
-						yearly: 48,
-					};*/
-					//multiplier *= timeFrameMultiplier[timeFrame];
 					angular.forEach(ds, function(ex) {
 						var total = 0;
 						angular.forEach(_this.getOptions().series, function(accountType) {
@@ -573,6 +544,12 @@ var app = angular.module('app',[
 		axis: "timeFrame",
 		setAxis: function(axis) {ret.axis = axis;},
 		getAxis: function() {return ret.axis;},
+		series: "accountType",
+		setSeries: function(series) {ret.series = series;},
+		getSeries: function() {return ret.series;},
+		metric: "number",
+		setMetric: function(metric) {ret.metric = metric;},
+		getMetric: function() {return ret.metric;},
 		getDatasource: function(chartName) {
 			return ret.list[chartName].getDataSource();
 		},
@@ -608,15 +585,19 @@ var app = angular.module('app',[
 	return {
 		restrict: 'ACE',
 		transclude: true,
-		scope: {chartName:"@", module:"@"},
+		scope: {chartName:"@", chartModule:"@", chartSeries:"@"},
 		controller: function($scope, $element, dataSummary, $attrs, chartOptions) {
 			$scope.$watch("$attrs.chartName", function () {
 				var appendChart = function() {
 					chartOptions.appendChart($element, $attrs.chartName);
 					console.log("Appended chart", $attrs.chartName);
 				};
+
 				chartOptions.setModule($attrs.chartModule);
 				chartOptions.setAxis($attrs.chartAxis);
+				chartOptions.setSeries($attrs.chartSeries);
+				chartOptions.setMetric($attrs.chartMetric || "number");
+
 				if (dataSummary.loaded) {appendChart();}
 				$scope.$on("accountsFetched", function(event, data){
 					// The only way to make this work was to ensure the chart name had been updated before the appropriate chart was appended.
@@ -665,15 +646,101 @@ var app = angular.module('app',[
 			$scope.chartName = $attrs.chartName;
 		},
 	}
-}).directive('yoaGridster', function() {
-	return {
-		restrict: 'ACE',
-		controller: function($scope, $attrs, $element) {
-			$element.gridster({
-				widget_margins: [10, 10],
-				widget_base_dimensions: [207, 206]
-			});
-			console.log("Gridster Directive has Run");
+}).factory('layoutService', function ($rootScope, $http, navigation) {
+	var layouts = {
+		list: {
+			opportunities: [
+				{metric: "number", series: "accountType"},
+				{metric: "number", series: "accountProducer"},
+				{metric: "number", series: "accountExecutive"},
+				{metric: "number", series: "recordAge"},
+				{metric: "number", series: "riskType"},
+				{metric: "number", series: "policyType"},
+				{metric: "number", series: "insurer"},
+				{metric: "number", series: "sumInsuredPerLimit"},
+				{metric: "number", series: "premium"},
+				{metric: "number", series: "brokerage"},
+			],
+			accounts: [
+				{metric: "number", series: "accountType"},
+				{metric: "number", series: "accountProducer"},
+				{metric: "number", series: "accountExecutive"},
+				{metric: "number", series: "bankName"},
+				{metric: "number", series: "recordAge"},
+				{metric: "number", series: "riskType"},
+				{metric: "number", series: "policyType"},
+				{metric: "number", series: "policyStatus"},
+				{metric: "number", series: "sumInsuredPerLimit"},
+				{metric: "number", series: "premium"},
+				{metric: "number", series: "brokerage"},
+			],
+			contacts: [
+				{metric: "number", series: "contactType"},
+				{metric: "number", series: "gender"},
+				{metric: "number", series: "contactAge"},
+				{metric: "number", series: "bankName"},
+				{metric: "number", series: "humanAge"},
+				{metric: "number", series: "nigerianState"},
+			],
+			policies: [
+				{metric: "number", series: "policyType"},
+				{metric: "number", series: "riskType"},
+				{metric: "number", series: "policyStatus"},
+				{metric: "number", series: "insurer"},
+				{metric: "number", series: "paymentStatus"},
+				{metric: "number", series: "claimsStatus"},
+				{metric: "number", series: "recordAge"},
+				{metric: "number", series: "lossRatio"},
+			],
+			claims: [
+				{metric: "number", series: "claimStatus"},
+				{metric: "number", series: "policyStatus"},
+				{metric: "number", series: "accountType"},
+				{metric: "number", series: "policyType"},
+				{metric: "number", series: "riskType"},
+				{metric: "number", series: "recordAge"},
+				{metric: "number", series: "value"},
+				{metric: "value", series: "claimStatus"},
+				{metric: "value", series: "accountType"},
+				{metric: "value", series: "policyType"},
+				{metric: "value", series: "riskType"},
+				{metric: "value", series: "recordAge"},
+			],
+			insurer: [
+				{metric: "number", series: "accountType"},
+				{metric: "number", series: "policyType"},
+				{metric: "number", series: "riskType"},
+				{metric: "number", series: "policyStatus"},
+				{metric: "number", series: "claimStatus"},
+				//{metric: "value", series: "insurer", special: "liability"},
+				//"claimSettledValueByInsurer",
+				//"listByAccountType",
+				//"listByPolicyType",
+				//"listByRiskType",
+				//"listByPolicyStatus",
+				//"listByClaimsStatus",
+			],
+			payment: [
+				{metric: "value", series: "paymentStatus"},
+				{metric: "value", series: "paymentType"},
+				{metric: "value", series: "paymentMode"},
+				{metric: "value", series: "accountType"},
+				{metric: "value", series: "accountProducer"},
+				{metric: "value", series: "accountExecutive"},
+				{metric: "value", series: "riskType"},
+				{metric: "value", series: "currency"},
+				//"brokerageCommissionValueByAccountType",
+				//"brokerageCommissionValueByPolicyType",
+				//"brokerageCommissionValueByRiskType",
+				//"brokerageCommissionValueByAccountProducer",
+				//"brokerageCommissionValueByAccountExecutive",
+				//"productionBonusValueByAccountProducer",
+				//"productionBonusValueByAccountExecutive",
+			],
 		},
-	}
+		getCurrentModuleLayout: function() {
+			return layouts.list[navigation.primary.current.name];
+		},
+	};
+	return layouts;
 });
