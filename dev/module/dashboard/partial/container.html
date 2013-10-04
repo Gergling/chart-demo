@@ -3,7 +3,7 @@
 		<div class="span12">
 			<ul class="nav nav-pills">
 				<li data-ng-repeat="tab in nav.primary.index.order" class="well" data-ng-class="{active: tab.name == nav.primary.current.name}">
-					<a href="#/{{tab.name}}">{{tab.label}}</a>
+					<a href="#/{{tab.name}}/{{nav.secondary.current.name}}">{{tab.label}}</a>
 				</li>
 			</ul>
 		</div>
